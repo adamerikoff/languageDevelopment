@@ -24,7 +24,7 @@ var (
 	// Map to track birds' positions on the screen.
 	birdsMap [screenWidth + 1][screenHeight + 1]int
 
-	lock = sync.Mutex{}
+	rWLock = sync.RWMutex{}
 )
 
 // Game struct represents the game state.
