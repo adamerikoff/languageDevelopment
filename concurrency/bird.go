@@ -18,8 +18,9 @@ func (bird *Bird) calcAcceleration() Vector {
 	// Calculate the view area of the bird.
 	upper, lower := bird.position.AddConstant(viewRadius), bird.position.AddConstant(-viewRadius)
 	// Initialize variables for calculating average velocity and count of nearby birds.
-	avgVelocity := Vector{0, 0}
+	avgPosition, avgVelocity := Vector{0, 0}, Vector{0, 0}
 	count := 0.0
+	lock.Lock()
 	// Iterate through the nearby area to find other birds.
 	for i := math.Max(lower.x, 0); i <= math.Min(upper.x, screenWidth); i++ {
 		for j := math.Max(lower.y, 0); j <= math.Min(upper.y, screenHeight); j++ {
@@ -30,27 +31,36 @@ func (bird *Bird) calcAcceleration() Vector {
 					// If the other bird is within view radius, add its velocity to the average velocity.
 					count++
 					avgVelocity = avgVelocity.Add(birds[otherBirdId].velocity)
+					avgPosition = avgPosition.Add(birds[otherBirdId].position)
 				}
 			}
 		}
 	}
+	lock.Unlock()
 	// Calculate acceleration based on the average velocity of nearby birds.
 	accel := Vector{0, 0}
 	if count > 0 {
-		avgVelocity = avgVelocity.DivideConstant(count)
-		accel = avgVelocity.Subtract(bird.velocity).MultiplyConstant(adjRate)
+		avgPosition, avgVelocity = avgPosition.DivideConstant(count), avgVelocity.DivideConstant(count)
+		accelAlignment := avgVelocity.Subtract(bird.velocity).MultiplyConstant(adjRate)
+		accelCohesion := avgPosition.Subtract(bird.position).MultiplyConstant(adjRate)
+
+		accel = accel.Add(accelAlignment).Add(accelCohesion)
 	}
 	return accel
 }
 
 // moveOne moves the bird by updating its velocity and position.
 func (bird *Bird) moveOne() {
+	acceleration := bird.calcAcceleration()
+	lock.Lock()
 	// Update velocity based on acceleration.
-	bird.velocity = bird.velocity.Add(bird.calcAcceleration()).Limit(-1, 1)
+	bird.velocity = bird.velocity.Add(acceleration).Limit(-1, 1)
 	// Clear the bird's previous position on the map.
 	birdsMap[int(bird.position.x)][int(bird.position.y)] = -1
 	// Update the bird's position.
 	bird.position = bird.position.Add(bird.velocity)
+	// Update the bird's position on the map.
+	birdsMap[int(bird.position.x)][int(bird.position.y)] = bird.id
 	// Check for screen boundaries and update velocity accordingly.
 	next := bird.position.Add(bird.velocity)
 	if next.x >= screenWidth || next.x < 0 {
@@ -59,8 +69,7 @@ func (bird *Bird) moveOne() {
 	if next.y >= screenHeight || next.y < 0 {
 		bird.velocity = Vector{x: bird.velocity.x, y: -bird.velocity.y}
 	}
-	// Update the bird's position on the map.
-	birdsMap[int(bird.position.x)][int(bird.position.y)] = bird.id
+	lock.Unlock()
 }
 
 // start starts the bird's movement simulation.

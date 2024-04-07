@@ -3,6 +3,7 @@ package main
 import (
 	"image/color"
 	"log"
+	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -22,6 +23,8 @@ var (
 	birds [birdCount]*Bird
 	// Map to track birds' positions on the screen.
 	birdsMap [screenWidth + 1][screenHeight + 1]int
+
+	lock = sync.Mutex{}
 )
 
 // Game struct represents the game state.
