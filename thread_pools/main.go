@@ -15,6 +15,7 @@ const nThreads int = 8
 
 // 1.446760417s  without pool
 // 0.591112917s with pool
+
 func main() {
 	dat, _ := os.ReadFile(filepath.Join("./", "polygons.txt"))
 	text := string(dat)
