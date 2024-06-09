@@ -11,6 +11,10 @@ type Lexer struct {
 	ch           byte
 }
 
+func NewToken(tokenType gogo_token.TokenType, ch byte) gogo_token.Token {
+	return gogo_token.Token{Type: tokenType, Literal: string(ch)}
+}
+
 func NewLexer(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
@@ -27,26 +31,34 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
+func (l *Lexer) skipWhitespace() {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
+}
+
+func isLetter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
+}
+
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	for IsLetter(l.ch) {
+	for isLetter(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
 }
 
-func IsLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
-}
-
-func NewToken(tokenType gogo_token.TokenType, ch byte) gogo_token.Token {
-	return gogo_token.Token{Type: tokenType, Literal: string(ch)}
-}
-
-func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isDigit(l.ch) {
 		l.readChar()
 	}
+	return l.input[position:l.position]
 }
 
 func (l *Lexer) NextToken() gogo_token.Token {
@@ -79,9 +91,13 @@ func (l *Lexer) NextToken() gogo_token.Token {
 		tok.Literal = ""
 		tok.Type = gogo_token.EOF
 	default:
-		if IsLetter(l.ch) {
+		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = gogo_token.LookupIdent(tok.Literal)
+			return tok
+		} else if isDigit(l.ch) {
+			tok.Type = gogo_token.INTEGER
+			tok.Literal = l.readNumber()
 			return tok
 		} else {
 			tok = NewToken(gogo_token.ILLEGAL, l.ch)
