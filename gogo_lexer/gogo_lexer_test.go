@@ -14,6 +14,13 @@ func TestNextToken(t *testing.T) {
 		x+y;
 	};
 	let result = add(ten, three);
+	!-/*5;
+   	5 < 10 > 5;
+	if (5 < 10) {
+		return true;
+	} else {
+		return false;
+ 	}
 	`
 
 	tests := []struct {
@@ -56,6 +63,35 @@ func TestNextToken(t *testing.T) {
 		{gogo_token.IDENTIFIER, "three"},
 		{gogo_token.RPARENTHESIS, ")"},
 		{gogo_token.SEMICOLON, ";"},
+		{gogo_token.EXCLAMATION, "!"},
+		{gogo_token.MINUS, "-"},
+		{gogo_token.DIVISION, "/"},
+		{gogo_token.MULTIPLICATION, "*"},
+		{gogo_token.INTEGER, "5"},
+		{gogo_token.SEMICOLON, ";"},
+		{gogo_token.INTEGER, "5"},
+		{gogo_token.LESSERTHAN, "<"},
+		{gogo_token.INTEGER, "10"},
+		{gogo_token.GREATERTHAN, ">"},
+		{gogo_token.INTEGER, "5"},
+		{gogo_token.SEMICOLON, ";"},
+		{gogo_token.IF, "if"},
+		{gogo_token.LPARENTHESIS, "("},
+		{gogo_token.INTEGER, "5"},
+		{gogo_token.LESSERTHAN, "<"},
+		{gogo_token.INTEGER, "10"},
+		{gogo_token.RPARENTHESIS, ")"},
+		{gogo_token.LBRACE, "{"},
+		{gogo_token.RETURN, "return"},
+		{gogo_token.TRUE, "true"},
+		{gogo_token.SEMICOLON, ";"},
+		{gogo_token.RBRACE, "}"},
+		{gogo_token.ELSE, "else"},
+		{gogo_token.LBRACE, "{"},
+		{gogo_token.RETURN, "return"},
+		{gogo_token.FALSE, "false"},
+		{gogo_token.SEMICOLON, ";"},
+		{gogo_token.RBRACE, "}"},
 		{gogo_token.EOF, ""},
 	}
 

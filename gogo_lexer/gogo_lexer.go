@@ -87,6 +87,12 @@ func (l *Lexer) NextToken() gogo_token.Token {
 		tok = NewToken(gogo_token.LBRACE, l.ch)
 	case '}':
 		tok = NewToken(gogo_token.RBRACE, l.ch)
+	case '<':
+		tok = NewToken(gogo_token.LESSERTHAN, l.ch)
+	case '>':
+		tok = NewToken(gogo_token.GREATERTHAN, l.ch)
+	case '!':
+		tok = NewToken(gogo_token.EXCLAMATION, l.ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = gogo_token.EOF
