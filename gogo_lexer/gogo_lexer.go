@@ -11,8 +11,15 @@ type Lexer struct {
 	ch           byte
 }
 
-func NewToken(tokenType gogo_token.TokenType, ch byte) gogo_token.Token {
-	return gogo_token.Token{Type: tokenType, Literal: string(ch)}
+func NewToken(tokenType gogo_token.TokenType, ch interface{}) gogo_token.Token {
+	switch v := ch.(type) {
+	case byte:
+		return gogo_token.Token{Type: tokenType, Literal: string(v)}
+	case string:
+		return gogo_token.Token{Type: tokenType, Literal: v}
+	default:
+		return gogo_token.Token{}
+	}
 }
 
 func NewLexer(input string) *Lexer {
@@ -61,12 +68,27 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.readPosition]
+	}
+}
+
 func (l *Lexer) NextToken() gogo_token.Token {
 	var tok gogo_token.Token
 	l.skipWhitespace()
 	switch l.ch {
 	case '=':
-		tok = NewToken(gogo_token.ASSIGN, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = NewToken(gogo_token.EQ, literal)
+		} else {
+			tok = NewToken(gogo_token.ASSIGN, l.ch)
+		}
 	case '+':
 		tok = NewToken(gogo_token.PLUS, l.ch)
 	case '-':
@@ -92,7 +114,14 @@ func (l *Lexer) NextToken() gogo_token.Token {
 	case '>':
 		tok = NewToken(gogo_token.GREATERTHAN, l.ch)
 	case '!':
-		tok = NewToken(gogo_token.EXCLAMATION, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = NewToken(gogo_token.NOT_EQ, literal)
+		} else {
+			tok = NewToken(gogo_token.EXCLAMATION, l.ch)
+		}
 	case 0:
 		tok.Literal = ""
 		tok.Type = gogo_token.EOF

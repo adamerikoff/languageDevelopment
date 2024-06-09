@@ -21,6 +21,8 @@ func TestNextToken(t *testing.T) {
 	} else {
 		return false;
  	}
+	10 == 10;
+	10 != 9;
 	`
 
 	tests := []struct {
@@ -92,6 +94,14 @@ func TestNextToken(t *testing.T) {
 		{gogo_token.FALSE, "false"},
 		{gogo_token.SEMICOLON, ";"},
 		{gogo_token.RBRACE, "}"},
+		{gogo_token.INTEGER, "10"},
+		{gogo_token.EQ, "=="},
+		{gogo_token.INTEGER, "10"},
+		{gogo_token.SEMICOLON, ";"},
+		{gogo_token.INTEGER, "10"},
+		{gogo_token.NOT_EQ, "!="},
+		{gogo_token.INTEGER, "9"},
+		{gogo_token.SEMICOLON, ";"},
 		{gogo_token.EOF, ""},
 	}
 

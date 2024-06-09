@@ -21,6 +21,9 @@ const (
 	DIVISION       = "/"
 	EXCLAMATION    = "!"
 
+	EQ     = "=="
+	NOT_EQ = "!="
+
 	LESSERTHAN  = "<"
 	GREATERTHAN = ">"
 
