@@ -1,6 +1,8 @@
 package gogo_parser
 
 import (
+	"fmt"
+
 	"github.com/adamerikoff/gogo/gogo_ast"
 	"github.com/adamerikoff/gogo/gogo_lexer"
 	"github.com/adamerikoff/gogo/gogo_token"
@@ -11,15 +13,29 @@ type Parser struct {
 
 	currentToken gogo_token.Token
 	peekToken    gogo_token.Token
+
+	errors []string
 }
 
 func NewParser(l *gogo_lexer.Lexer) *Parser {
-	p := &Parser{l: l}
+	p := &Parser{
+		l:      l,
+		errors: []string{},
+	}
 
 	p.nextToken()
 	p.nextToken()
 
 	return p
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t gogo_token.TokenType) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) nextToken() {
@@ -33,11 +49,13 @@ func (p *Parser) currentTokenIs(t gogo_token.TokenType) bool {
 func (p *Parser) peekTokenIs(t gogo_token.TokenType) bool {
 	return p.peekToken.Type == t
 }
+
 func (p *Parser) expectPeek(t gogo_token.TokenType) bool {
 	if p.peekTokenIs(t) {
 		p.nextToken()
 		return true
 	} else {
+		p.peekError(t)
 		return false
 	}
 }
@@ -64,10 +82,24 @@ func (p *Parser) parseLetStatement() *gogo_ast.LetStatement {
 
 }
 
+func (p *Parser) parseReturnStatement() *gogo_ast.ReturnStatement {
+	statement := &gogo_ast.ReturnStatement{Token: p.currentToken}
+	p.nextToken()
+
+	// TODO: We're skipping the expressions until we
+	// encounter a semicolon
+	for !p.currentTokenIs(gogo_token.SEMICOLON) {
+		p.nextToken()
+	}
+	return statement
+}
+
 func (p *Parser) parseStatement() gogo_ast.Statement {
 	switch p.currentToken.Type {
 	case gogo_token.LET:
 		return p.parseLetStatement()
+	case gogo_token.RETURN:
+		return p.parseReturnStatement()
 	default:
 		return nil
 	}
