@@ -1,4 +1,4 @@
-package token
+package gogo_token
 
 type TokenType string
 
@@ -11,7 +11,7 @@ const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	IDENTIFIER = "IDENTIFIER" // add, foobar, x, y, ...
+	IDENTIFIER = "IDENTIFIER"
 	INTEGER    = "INTEGER"
 
 	ASSIGN         = "="
@@ -30,3 +30,15 @@ const (
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
 )
+
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+func LookupIdent(ident string) TokenType {
+	if tok, ok := keywords[ident]; ok {
+		return tok
+	}
+	return IDENTIFIER
+}
