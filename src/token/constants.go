@@ -6,22 +6,22 @@ const (
 	EOF     = "EOF"
 
 	//IDENTIFIERS AND LITERALS
-	IDENT = "IDENT"
-	INT   = "INT"
+	IDENTIFIER = "IDENTIFIER"
+	INTEGER    = "INTEGER"
 
 	//OPERATORS
 	ASSIGN = "="
 	PLUS   = "+"
 
 	//DELIMITERS
-	COMMA     = ","
-	SEMICOLON = ";"
-	LPAREN    = "("
-	RPAREN    = ")"
-	LBRACE    = "{"
-	RBRACE    = "}"
+	COMMA         = ","
+	SEMICOLON     = ";"
+	LPARENTHESIS  = "("
+	RPPARENTHESIS = ")"
+	LCBRACE       = "{"
+	RCBRACE       = "}"
 
 	//KEYWORDS
 	FUNCTION = "FUNCTION"
-	LET      = "LET"
+	VARIABLE = "VARIABLE"
 )
