@@ -23,5 +23,10 @@ const (
 
 	//KEYWORDS
 	FUNCTION = "FUNCTION"
-	VARIABLE = "VARIABLE"
+	LET      = "LET"
 )
+
+var keywords = map[string]TokenType{
+	"fn": FUNCTION,
+	"@":  LET,
+}

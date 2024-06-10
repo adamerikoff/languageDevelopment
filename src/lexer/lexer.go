@@ -32,34 +32,41 @@ func (lexer *Lexer) readCharacter() {
 func (lexer *Lexer) NextToken() token.TokenInstance {
 	var tok token.TokenInstance
 
+	lexer.skipWhitespace()
+
 	switch lexer.currentChar {
 	case '=':
-		tok = newToken(token.ASSIGN, lexer.currentChar)
+		tok = token.NewToken(token.ASSIGN, lexer.currentChar)
 	case '.':
-		tok = newToken(token.DOT, lexer.currentChar)
+		tok = token.NewToken(token.DOT, lexer.currentChar)
 	case '(':
-		tok = newToken(token.LPARENTHESIS, lexer.currentChar)
+		tok = token.NewToken(token.LPARENTHESIS, lexer.currentChar)
 	case ')':
-		tok = newToken(token.RPPARENTHESIS, lexer.currentChar)
+		tok = token.NewToken(token.RPPARENTHESIS, lexer.currentChar)
 	case ',':
-		tok = newToken(token.COMMA, lexer.currentChar)
+		tok = token.NewToken(token.COMMA, lexer.currentChar)
 	case '+':
-		tok = newToken(token.PLUS, lexer.currentChar)
+		tok = token.NewToken(token.PLUS, lexer.currentChar)
 	case '{':
-		tok = newToken(token.LCBRACE, lexer.currentChar)
+		tok = token.NewToken(token.LCBRACE, lexer.currentChar)
 	case '}':
-		tok = newToken(token.RCBRACE, lexer.currentChar)
+		tok = token.NewToken(token.RCBRACE, lexer.currentChar)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		if isLetter(lexer.currentChar) {
+			tok.Literal = lexer.readIdentifier()
+			tok.Type = token.LookupIdentifier(tok.Literal)
+			return tok
+		} else if isDigit(lexer.currentChar) {
+			tok.Type = token.INTEGER
+			tok.Literal = lexer.readNumber()
+			return tok
+		} else {
+			tok = token.NewToken(token.ILLEGAL, lexer.currentChar)
+		}
 	}
 	lexer.readCharacter()
 	return tok
-}
-
-func newToken(tokenType token.TokenType, character byte) token.TokenInstance {
-	return token.TokenInstance{
-		Type:    tokenType,
-		Literal: string(character),
-	}
 }

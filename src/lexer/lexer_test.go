@@ -7,21 +7,60 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	input := `@ five = 5.
+	input := `
+	@ five = 5.
+	@ ten = 10.
+
+	@ add = fn(x, y) {
+		x + y.
+	}.
+	@ result = add(five, ten).
 	`
 
 	tests := []struct {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
+		{token.LET, "@"},
+		{token.IDENTIFIER, "five"},
 		{token.ASSIGN, "="},
-		{token.PLUS, "+"},
+		{token.INTEGER, "5"},
+		{token.DOT, "."},
+
+		{token.LET, "@"},
+		{token.IDENTIFIER, "ten"},
+		{token.ASSIGN, "="},
+		{token.INTEGER, "10"},
+		{token.DOT, "."},
+
+		{token.LET, "@"},
+		{token.IDENTIFIER, "add"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "fn"},
 		{token.LPARENTHESIS, "("},
+		{token.IDENTIFIER, "x"},
+		{token.COMMA, ","},
+		{token.IDENTIFIER, "y"},
 		{token.RPPARENTHESIS, ")"},
 		{token.LCBRACE, "{"},
-		{token.RCBRACE, "}"},
-		{token.COMMA, ","},
+		{token.IDENTIFIER, "x"},
+		{token.PLUS, "+"},
+		{token.IDENTIFIER, "y"},
 		{token.DOT, "."},
+		{token.RCBRACE, "}"},
+		{token.DOT, "."},
+
+		{token.LET, "@"},
+		{token.IDENTIFIER, "result"},
+		{token.ASSIGN, "="},
+		{token.IDENTIFIER, "add"},
+		{token.LPARENTHESIS, "("},
+		{token.IDENTIFIER, "five"},
+		{token.COMMA, ","},
+		{token.IDENTIFIER, "ten"},
+		{token.RPPARENTHESIS, ")"},
+		{token.DOT, "."},
+
 		{token.EOF, ""},
 	}
 
