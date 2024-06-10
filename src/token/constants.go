@@ -31,9 +31,19 @@ const (
 	//KEYWORDS
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	RETURN   = "RETURN"
 )
 
 var keywords = map[string]TokenType{
-	"fn": FUNCTION,
-	"@":  LET,
+	"fn":   FUNCTION,
+	"@":    LET,
+	"T":    TRUE,
+	"F":    FALSE,
+	"^":    RETURN,
+	"if":   IF,
+	"else": ELSE,
 }

@@ -5,8 +5,9 @@ func isLetter(character byte) bool {
 	isUppercase := 'A' <= character && character <= 'Z'
 	isUnderscore := character == '_'
 	isAt := character == '@'
+	isCircumflex := character == '^'
 
-	return isLowercase || isUppercase || isUnderscore || isAt
+	return isLowercase || isUppercase || isUnderscore || isAt || isCircumflex
 }
 
 func (lexer *Lexer) skipWhitespace() {
