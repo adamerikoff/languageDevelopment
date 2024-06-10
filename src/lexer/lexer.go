@@ -26,7 +26,12 @@ func (lexer *Lexer) NextToken() token.TokenInstance {
 
 	switch lexer.currentChar {
 	case '=':
-		tok = token.NewToken(token.ASSIGN, lexer.currentChar)
+		if lexer.peekCharacter() == '=' {
+			lexer.readCharacter()
+			tok = token.NewToken(token.EQUAL, "==")
+		} else {
+			tok = token.NewToken(token.ASSIGN, lexer.currentChar)
+		}
 	case '.':
 		tok = token.NewToken(token.DOT, lexer.currentChar)
 	case '(':
@@ -48,7 +53,12 @@ func (lexer *Lexer) NextToken() token.TokenInstance {
 	case '-':
 		tok = token.NewToken(token.MINUS, lexer.currentChar)
 	case '!':
-		tok = token.NewToken(token.EXCLAMATION, lexer.currentChar)
+		if lexer.peekCharacter() == '=' {
+			lexer.readCharacter()
+			tok = token.NewToken(token.NOTEQUAL, "!=")
+		} else {
+			tok = token.NewToken(token.EXCLAMATION, lexer.currentChar)
+		}
 	case '*':
 		tok = token.NewToken(token.ASTERISK, lexer.currentChar)
 	case '/':

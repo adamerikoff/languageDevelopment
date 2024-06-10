@@ -17,6 +17,8 @@ const (
 	SLASH       = "/"
 	EXCLAMATION = "!"
 
+	EQUAL       = "=="
+	NOTEQUAL    = "!="
 	LESSTHAN    = "<"
 	GREATERTHAN = ">"
 

@@ -1,5 +1,13 @@
 package lexer
 
+func (lexer *Lexer) peekCharacter() byte {
+	if lexer.readPosition >= len(lexer.input) {
+		return 0
+	} else {
+		return lexer.input[lexer.readPosition]
+	}
+}
+
 func (lexer *Lexer) readCharacter() {
 	if lexer.readPosition >= len(lexer.input) {
 		lexer.currentChar = 0
