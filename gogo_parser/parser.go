@@ -2,10 +2,21 @@ package gogo_parser
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/adamerikoff/gogo/gogo_ast"
 	"github.com/adamerikoff/gogo/gogo_lexer"
 	"github.com/adamerikoff/gogo/gogo_token"
+)
+
+const (
+	_ int = iota
+	LOWEST
+	EQUALS  // == LESSGREATER // > or <
+	SUM     // +
+	PRODUCT // *
+	PREFIX  // -X or !X
+	CALL    // myFunction(X)
 )
 
 type Parser struct {
@@ -15,6 +26,16 @@ type Parser struct {
 	peekToken    gogo_token.Token
 
 	errors []string
+
+	prefixParseFns map[gogo_token.TokenType]prefixParseFn
+	infixParseFns  map[gogo_token.TokenType]infixParseFn
+}
+
+func (p *Parser) registerPrefix(tokenType gogo_token.TokenType, fn prefixParseFn) {
+	p.prefixParseFns[tokenType] = fn
+}
+func (p *Parser) registerInfix(tokenType gogo_token.TokenType, fn infixParseFn) {
+	p.infixParseFns[tokenType] = fn
 }
 
 func NewParser(l *gogo_lexer.Lexer) *Parser {
@@ -22,11 +43,29 @@ func NewParser(l *gogo_lexer.Lexer) *Parser {
 		l:      l,
 		errors: []string{},
 	}
-
+	p.prefixParseFns = make(map[gogo_token.TokenType]prefixParseFn)
+	p.registerPrefix(gogo_token.IDENTIFIER, p.parseIdentifier)
+	p.registerPrefix(gogo_token.INTEGER, p.parseIntegerLiteral)
+	p.registerPrefix(gogo_token.EXCLAMATION, p.parsePrefixExpression)
+	p.registerPrefix(gogo_token.MINUS, p.parsePrefixExpression)
 	p.nextToken()
 	p.nextToken()
 
 	return p
+}
+
+func (p *Parser) parsePrefixExpression() gogo_ast.Expression {
+	expression := &gogo_ast.PrefixExpression{
+		Token:    p.currentToken,
+		Operator: p.currentToken.Literal,
+	}
+	p.nextToken()
+	expression.Right = p.parseExpression(PREFIX)
+	return expression
+}
+
+func (p *Parser) parseIdentifier() gogo_ast.Expression {
+	return &gogo_ast.Identifier{Token: p.currentToken, Value: p.currentToken.Literal}
 }
 
 func (p *Parser) Errors() []string {
@@ -101,7 +140,7 @@ func (p *Parser) parseStatement() gogo_ast.Statement {
 	case gogo_token.RETURN:
 		return p.parseReturnStatement()
 	default:
-		return nil
+		return p.parseExpressionStatement()
 	}
 }
 
@@ -117,4 +156,45 @@ func (p *Parser) ParseProgram() *gogo_ast.Program {
 		p.nextToken()
 	}
 	return program
+}
+
+type (
+	prefixParseFn func() gogo_ast.Expression
+	infixParseFn  func(gogo_ast.Expression) gogo_ast.Expression
+)
+
+func (p *Parser) noPrefixParseFnError(t gogo_token.TokenType) {
+	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+	p.errors = append(p.errors, msg)
+}
+
+func (p *Parser) parseExpression(precedence int) gogo_ast.Expression {
+	prefix := p.prefixParseFns[p.currentToken.Type]
+	if prefix == nil {
+		p.noPrefixParseFnError(p.currentToken.Type)
+		return nil
+	}
+	leftExp := prefix()
+	return leftExp
+}
+
+func (p *Parser) parseExpressionStatement() *gogo_ast.ExpressionStatement {
+	statement := &gogo_ast.ExpressionStatement{Token: p.currentToken}
+	statement.Expression = p.parseExpression(LOWEST)
+	if p.peekTokenIs(gogo_token.SEMICOLON) {
+		p.nextToken()
+	}
+	return statement
+}
+
+func (p *Parser) parseIntegerLiteral() gogo_ast.Expression {
+	lit := &gogo_ast.IntegerLiteral{Token: p.currentToken}
+	value, err := strconv.ParseInt(p.currentToken.Literal, 0, 64)
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as integer", p.currentToken.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+	lit.Value = value
+	return lit
 }
