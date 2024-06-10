@@ -1,6 +1,6 @@
 # ponGo Programming Language
 
-<img src="https://github.com/adamerikoff/pongo/blob/master/pongo.jpg" align="right" alt="Size Limit logo by Anton Lovchikov" width="120" height="178">
+<img src="https://github.com/adamerikoff/ponGo/blob/main/pongo.jpg" align="right" alt="Size Limit logo by Anton Lovchikov" width="120" height="178">
 **ponGo** is a simple and expressive programming language implemented in Go, designed to be easy to learn and use for both beginners and experienced developers alike.
 
 ## Features
