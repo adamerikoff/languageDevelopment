@@ -19,16 +19,6 @@ func NewLexer(input string) *Lexer {
 	return lexer
 }
 
-func (lexer *Lexer) readCharacter() {
-	if lexer.readPosition >= len(lexer.input) {
-		lexer.currentChar = 0
-	} else {
-		lexer.currentChar = lexer.input[lexer.readPosition]
-	}
-	lexer.position = lexer.readPosition
-	lexer.readPosition += 1
-}
-
 func (lexer *Lexer) NextToken() token.TokenInstance {
 	var tok token.TokenInstance
 
@@ -51,6 +41,18 @@ func (lexer *Lexer) NextToken() token.TokenInstance {
 		tok = token.NewToken(token.LCBRACE, lexer.currentChar)
 	case '}':
 		tok = token.NewToken(token.RCBRACE, lexer.currentChar)
+	case '>':
+		tok = token.NewToken(token.GREATERTHAN, lexer.currentChar)
+	case '<':
+		tok = token.NewToken(token.LESSTHAN, lexer.currentChar)
+	case '-':
+		tok = token.NewToken(token.MINUS, lexer.currentChar)
+	case '!':
+		tok = token.NewToken(token.EXCLAMATION, lexer.currentChar)
+	case '*':
+		tok = token.NewToken(token.ASTERISK, lexer.currentChar)
+	case '/':
+		tok = token.NewToken(token.SLASH, lexer.currentChar)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF

@@ -10,8 +10,15 @@ const (
 	INTEGER    = "INTEGER"
 
 	//OPERATORS
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN      = "="
+	PLUS        = "+"
+	MINUS       = "-"
+	ASTERISK    = "*"
+	SLASH       = "/"
+	EXCLAMATION = "!"
+
+	LESSTHAN    = "<"
+	GREATERTHAN = ">"
 
 	//DELIMITERS
 	COMMA         = ","
