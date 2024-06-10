@@ -35,8 +35,8 @@ func (lexer *Lexer) NextToken() token.TokenInstance {
 	switch lexer.currentChar {
 	case '=':
 		tok = newToken(token.ASSIGN, lexer.currentChar)
-	case ';':
-		tok = newToken(token.SEMICOLON, lexer.currentChar)
+	case '.':
+		tok = newToken(token.DOT, lexer.currentChar)
 	case '(':
 		tok = newToken(token.LPARENTHESIS, lexer.currentChar)
 	case ')':

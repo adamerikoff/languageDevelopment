@@ -15,7 +15,7 @@ const (
 
 	//DELIMITERS
 	COMMA         = ","
-	SEMICOLON     = ";"
+	DOT           = "."
 	LPARENTHESIS  = "("
 	RPPARENTHESIS = ")"
 	LCBRACE       = "{"
