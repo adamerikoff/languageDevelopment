@@ -1,3 +1,3 @@
-module github.com/adamerikoff/gogo
+module github.com/adamerikoff/ponGo
 
-go 1.22.3
+go 1.22.4
