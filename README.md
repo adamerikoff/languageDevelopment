@@ -44,9 +44,9 @@ To start using ponGo, follow these steps:
    	5 < 10 > 5.
 
 	if (5 < 10) {
-		^ T.
+		<< T.
 	} else {
-		^ F.
+		<< F.
  	}
 	10 == 10.
 	10 != 9.
