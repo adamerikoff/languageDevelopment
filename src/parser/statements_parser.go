@@ -13,26 +13,3 @@ func (parser *Parser) parseStatement() ast.Statement {
 		return nil
 	}
 }
-
-func (parser *Parser) parseLetStatement() *ast.LetStatement {
-	statement := &ast.LetStatement{
-		Token: parser.currentToken,
-	}
-
-	if !parser.expectedNextToken(token.IDENTIFIER) {
-		return nil
-	}
-
-	statement.Name = &ast.Identifier{
-		Token: parser.currentToken,
-		Value: parser.currentToken.Literal,
-	}
-
-	// TODO: We're skipping the expressions until we
-	// encounter a DOT
-
-	for !parser.currentTokenIs(token.DOT) {
-		parser.nextToken()
-	}
-	return statement
-}
