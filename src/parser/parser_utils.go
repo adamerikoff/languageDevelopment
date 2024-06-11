@@ -15,6 +15,7 @@ func (parser *Parser) expectedNextToken(tokenType token.TokenType) bool {
 		parser.nextToken()
 		return true
 	} else {
+		parser.expectedError(tokenType)
 		return false
 	}
 }

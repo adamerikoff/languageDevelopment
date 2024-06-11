@@ -19,6 +19,10 @@ func (parser *Parser) parseLetStatement() *ast.LetStatement {
 		Value: parser.currentToken.Literal,
 	}
 
+	if !parser.expectedNextToken(token.ASSIGN) {
+		return nil
+	}
+
 	// TODO: We're skipping the expressions until we
 	// encounter a DOT
 

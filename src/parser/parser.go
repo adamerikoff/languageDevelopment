@@ -10,10 +10,14 @@ type Parser struct {
 	lexer         *lexer.Lexer
 	currentToken  token.TokenInstance
 	expectedToken token.TokenInstance
+	errors        []string
 }
 
 func NewParser(lexer *lexer.Lexer) *Parser {
-	parser := &Parser{lexer: lexer}
+	parser := &Parser{
+		lexer:  lexer,
+		errors: []string{},
+	}
 	parser.nextToken()
 	parser.nextToken()
 	return parser
