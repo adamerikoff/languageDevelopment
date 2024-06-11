@@ -30,6 +30,29 @@ To start using ponGo, follow these steps:
 
 4. **Experiment**: Start writing and running ponGo code! Experiment with different language features, try out example programs, and have fun exploring the capabilities of ponGo.
 
+## Syntax Example
+```
+@ five = 5.
+	@ ten = 10.
+
+	@ add = fn(x, y) {
+		x + y.
+	}.
+	@ result = add(five, ten).
+
+	!-/*5.
+   	5 < 10 > 5.
+
+	if (5 < 10) {
+		^ T.
+	} else {
+		^ F.
+ 	}
+	10 == 10.
+	10 != 9.
+   
+```
+
 ## Documentation
 
 to add
