@@ -6,11 +6,19 @@ import (
 	"github.com/adamerikoff/ponGo/src/token"
 )
 
+type (
+	prefixParseFunction func() ast.Expression
+	inflixParseFunction func(ast.Expression) ast.Expression
+)
+
 type Parser struct {
 	lexer         *lexer.Lexer
 	currentToken  token.TokenInstance
 	expectedToken token.TokenInstance
 	errors        []string
+
+	prefixParseFunction map[token.TokenType]prefixParseFunction
+	inflixParseFunction map[token.TokenType]inflixParseFunction
 }
 
 func NewParser(lexer *lexer.Lexer) *Parser {
@@ -40,4 +48,11 @@ func (parser *Parser) ParseProgram() *ast.Program {
 		parser.nextToken()
 	}
 	return program
+}
+
+func (parser *Parser) registerPrefix(tokenType token.TokenType, function prefixParseFunction) {
+	parser.prefixParseFunction[tokenType] = function
+}
+func (parser *Parser) registerInflix(tokenType token.TokenType, function inflixParseFunction) {
+	parser.inflixParseFunction[tokenType] = function
 }
