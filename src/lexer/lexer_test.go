@@ -20,9 +20,9 @@ func TestNextToken(t *testing.T) {
    	5 < 10 > 5.
 
 	if (5 < 10) {
-		^ T.
+		<< T.
 	} else {
-		^ F.
+		<< F.
  	}
 	10 == 10.
 	10 != 9.
@@ -93,13 +93,13 @@ func TestNextToken(t *testing.T) {
 		{token.INTEGER, "10"},
 		{token.RPPARENTHESIS, ")"},
 		{token.LCBRACE, "{"},
-		{token.RETURN, "^"},
+		{token.RETURN, "<<"},
 		{token.TRUE, "T"},
 		{token.DOT, "."},
 		{token.RCBRACE, "}"},
 		{token.ELSE, "else"},
 		{token.LCBRACE, "{"},
-		{token.RETURN, "^"},
+		{token.RETURN, "<<"},
 		{token.FALSE, "F"},
 		{token.DOT, "."},
 		{token.RCBRACE, "}"},

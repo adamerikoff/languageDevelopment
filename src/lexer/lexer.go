@@ -49,7 +49,12 @@ func (lexer *Lexer) NextToken() token.TokenInstance {
 	case '>':
 		tok = token.NewToken(token.GREATERTHAN, lexer.currentChar)
 	case '<':
-		tok = token.NewToken(token.LESSTHAN, lexer.currentChar)
+		if lexer.peekCharacter() == '<' {
+			lexer.readCharacter()
+			tok = token.NewToken(token.RETURN, "<<")
+		} else {
+			tok = token.NewToken(token.LESSTHAN, lexer.currentChar)
+		}
 	case '-':
 		tok = token.NewToken(token.MINUS, lexer.currentChar)
 	case '!':

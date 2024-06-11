@@ -45,7 +45,7 @@ var keywords = map[string]TokenType{
 	"@":    LET,
 	"T":    TRUE,
 	"F":    FALSE,
-	"^":    RETURN,
+	"<<":   RETURN,
 	"if":   IF,
 	"else": ELSE,
 }

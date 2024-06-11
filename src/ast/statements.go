@@ -22,3 +22,13 @@ func (ls *LetStatement) statementNode() {}
 func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
 }
+
+type ReturnStatement struct {
+	Token       token.TokenInstance
+	ReturnValue Expression
+}
+
+func (returnStatement *ReturnStatement) statementNode() {}
+func (returnStatement *ReturnStatement) TokenLiteral() string {
+	return returnStatement.Token.Literal
+}
