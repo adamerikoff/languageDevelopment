@@ -23,12 +23,18 @@ type Parser struct {
 
 func NewParser(lexer *lexer.Lexer) *Parser {
 	parser := &Parser{
-		lexer:  lexer,
-		errors: []string{},
+		lexer:               lexer,
+		errors:              []string{},
+		prefixParseFunction: make(map[token.TokenType]prefixParseFunction),
 	}
+	parser.registerPrefix(token.IDENTIFIER, parser.parseIdentifier)
 	parser.nextToken()
 	parser.nextToken()
 	return parser
+}
+
+func (parser *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: parser.currentToken, Value: parser.currentToken.Literal}
 }
 
 func (parser *Parser) nextToken() {
