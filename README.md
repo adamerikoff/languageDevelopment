@@ -32,7 +32,7 @@ To start using ponGo, follow these steps:
 
 ## Syntax Example
 ```
-@ five = 5.
+	@ five = 5.
 	@ ten = 10.
 
 	@ add = fn(x, y) {
