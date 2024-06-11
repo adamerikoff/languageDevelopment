@@ -35,7 +35,7 @@ To start using ponGo, follow these steps:
 	@ five = 5.
 	@ ten = 10.
 
-	@ add = fn(x, y) {
+	@ add = f(x, y) {
 		x + y.
 	}.
 	@ result = add(five, ten).

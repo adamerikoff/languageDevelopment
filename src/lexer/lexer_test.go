@@ -11,7 +11,7 @@ func TestNextToken(t *testing.T) {
 	@ five = 5.
 	@ ten = 10.
 
-	@ add = fn(x, y) {
+	@ add = f(x, y) {
 		x + y.
 	}.
 	@ result = add(five, ten).
@@ -47,7 +47,7 @@ func TestNextToken(t *testing.T) {
 		{token.LET, "@"},
 		{token.IDENTIFIER, "add"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "f"},
 		{token.LPARENTHESIS, "("},
 		{token.IDENTIFIER, "x"},
 		{token.COMMA, ","},
