@@ -24,6 +24,8 @@ func TestNextToken(t *testing.T) {
 	} else {
 		return false;
 	}
+	10 == 10;
+	10 != 9;
 	`
 
 	tests := []struct {
@@ -95,6 +97,14 @@ func TestNextToken(t *testing.T) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RIGHT_BRACE, "}"},
+		{token.INTEGER, "10"},
+		{token.EQUAL, "=="},
+		{token.INTEGER, "10"},
+		{token.SEMICOLON, ";"},
+		{token.INTEGER, "10"},
+		{token.NOT_EQUAL, "!="},
+		{token.INTEGER, "9"},
+		{token.SEMICOLON, ";"},
 		{token.END_OF_FILE, ""},
 	}
 	lexer := lexer.NewLexer(input)

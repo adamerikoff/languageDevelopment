@@ -15,6 +15,8 @@ const (
 	INFERIOR    = "<"
 	SUPERIOR    = ">"
 	EXCLAMATION = "!"
+	EQUAL       = "=="
+	NOT_EQUAL   = "!="
 	//AMPERSAND = "&"
 
 	COMMA     = ","
