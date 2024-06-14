@@ -25,5 +25,17 @@ const (
 	RIGHT_BRACE       = "}"
 
 	FUNCTION = "FUNCTION"
-	VARIABLE = "VARIABLE"
+	LET      = "LET"
 )
+
+var KEYWORDS = map[string]TokenType{
+	"function": FUNCTION,
+	"let":      LET,
+}
+
+func ClassifyToken(ident string) TokenType {
+	if tok, ok := KEYWORDS[ident]; ok {
+		return tok
+	}
+	return IDENTIFIER
+}

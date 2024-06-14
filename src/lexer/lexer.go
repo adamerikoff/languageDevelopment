@@ -11,11 +11,11 @@ type Lexer struct {
 
 func NewLexer(input string) *Lexer {
 	lexer := &Lexer{input: input}
-	lexer.ReadCharacter()
+	lexer.readCharacter()
 	return lexer
 }
 
-func (lexer *Lexer) ReadCharacter() {
+func (lexer *Lexer) readCharacter() {
 	switch {
 	case lexer.readPosition >= len(lexer.input):
 		lexer.character = 0
@@ -26,8 +26,34 @@ func (lexer *Lexer) ReadCharacter() {
 	}
 }
 
+func (lexer *Lexer) readIdentifier() string {
+	startPosition := lexer.currentPosition
+	for isLetter(lexer.character) {
+		lexer.readCharacter()
+	}
+	endPosition := lexer.currentPosition
+	return lexer.input[startPosition:endPosition]
+}
+
+func (lexer *Lexer) readNumber() string {
+	startPosition := lexer.currentPosition
+	for isDigit(lexer.character) {
+		lexer.readCharacter()
+	}
+	endPosition := lexer.currentPosition
+	return lexer.input[startPosition:endPosition]
+}
+
+func (lexer *Lexer) skipWhitespace() {
+	for lexer.character == ' ' || lexer.character == '\t' || lexer.character == '\n' || lexer.character == '\r' {
+		lexer.readCharacter()
+	}
+}
+
 func (lexer *Lexer) NextToken() token.Token {
 	var tok token.Token
+
+	lexer.skipWhitespace()
 
 	switch lexer.character {
 	case '=':
@@ -58,7 +84,19 @@ func (lexer *Lexer) NextToken() token.Token {
 		tok = token.NewToken(token.COMMA, lexer.character)
 	case 0:
 		tok = token.NewToken(token.END_OF_FILE, "")
+	default:
+		if isLetter(lexer.character) {
+			tok.Literal = lexer.readIdentifier()
+			tok.Type = token.ClassifyToken(tok.Literal)
+			return tok
+		} else if isDigit(lexer.character) {
+			tok.Literal = lexer.readNumber()
+			tok.Type = token.INTEGER
+			return tok
+		} else {
+			tok = token.NewToken(token.ILLEGAL, "")
+		}
 	}
-	lexer.ReadCharacter()
+	lexer.readCharacter()
 	return tok
 }
