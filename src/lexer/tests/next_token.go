@@ -3,6 +3,7 @@ package lexer
 import (
 	"testing"
 
+	"github.com/adamerikoff/ponGo/src/lexer"
 	"github.com/adamerikoff/ponGo/src/token"
 )
 
@@ -60,7 +61,7 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.END_OF_FILE, ""},
 	}
-	lexer := NewLexer(input)
+	lexer := lexer.NewLexer(input)
 
 	for index, test_element := range tests {
 		tok := lexer.NextToken()
