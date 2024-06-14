@@ -19,6 +19,11 @@ func TestNextToken(t *testing.T) {
 	let result = add(temp, temp_two);
 	!-/*5;
 	5 < 10 > 5;
+	if (5 < 10){
+		return true;
+	} else {
+		return false;
+	}
 	`
 
 	tests := []struct {
@@ -73,6 +78,23 @@ func TestNextToken(t *testing.T) {
 		{token.SUPERIOR, ">"},
 		{token.INTEGER, "5"},
 		{token.SEMICOLON, ";"},
+		{token.IF, "if"},
+		{token.LEFT_PARENTHESIS, "("},
+		{token.INTEGER, "5"},
+		{token.INFERIOR, "<"},
+		{token.INTEGER, "10"},
+		{token.RIGHT_PARENTHESIS, ")"},
+		{token.LEFT_BRACE, "{"},
+		{token.RETURN, "return"},
+		{token.TRUE, "true"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHT_BRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LEFT_BRACE, "{"},
+		{token.RETURN, "return"},
+		{token.FALSE, "false"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHT_BRACE, "}"},
 		{token.END_OF_FILE, ""},
 	}
 	lexer := lexer.NewLexer(input)
