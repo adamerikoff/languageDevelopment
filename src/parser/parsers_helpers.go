@@ -29,3 +29,16 @@ func (parser *Parser) expectSubsequentError(t token.TokenType) {
 		t, parser.subsequentToken.Type)
 	parser.errors = append(parser.errors, msg)
 }
+
+func (parser *Parser) subsequentPrecedence() int {
+	if precedence, ok := precedences[parser.subsequentToken.Type]; ok {
+		return precedence
+	}
+	return LOWEST
+}
+func (parser *Parser) currentPrecedence() int {
+	if precedence, ok := precedences[parser.currentToken.Type]; ok {
+		return precedence
+	}
+	return LOWEST
+}

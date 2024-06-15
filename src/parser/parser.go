@@ -32,6 +32,16 @@ func NewParser(lexer *lexer.Lexer) *Parser {
 	parser.registerPrefix(token.INTEGER, parser.parseIntegralLiteral)
 	parser.registerPrefix(token.EXCLAMATION, parser.parsePrefixExpression)
 	parser.registerPrefix(token.MINUS, parser.parsePrefixExpression)
+
+	parser.infixParseFns = make(map[token.TokenType]infixParseFn)
+	parser.registerInfix(token.PLUS, parser.parseInfixExpression)
+	parser.registerInfix(token.MINUS, parser.parseInfixExpression)
+	parser.registerInfix(token.SLASH, parser.parseInfixExpression)
+	parser.registerInfix(token.ASTERISK, parser.parseInfixExpression)
+	parser.registerInfix(token.EQUAL, parser.parseInfixExpression)
+	parser.registerInfix(token.NOT_EQUAL, parser.parseInfixExpression)
+	parser.registerInfix(token.INFERIOR, parser.parseInfixExpression)
+	parser.registerInfix(token.SUPERIOR, parser.parseInfixExpression)
 	// Read two tokens, so curToken and peekToken are both set
 	parser.nextToken()
 	parser.nextToken()

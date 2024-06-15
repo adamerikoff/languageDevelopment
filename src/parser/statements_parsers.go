@@ -70,6 +70,15 @@ func (parser *Parser) parseExpression(precedence int) ast.Expression {
 		return nil
 	}
 	leftExp := prefix()
+
+	for !parser.SubsequentTokenIs(token.SEMICOLON) && precedence < parser.subsequentPrecedence() {
+		infix := parser.infixParseFns[parser.subsequentToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+		parser.nextToken()
+		leftExp = infix(leftExp)
+	}
 	return leftExp
 }
 
@@ -92,5 +101,17 @@ func (parser *Parser) parsePrefixExpression() ast.Expression {
 	}
 	parser.nextToken()
 	expression.Right = parser.parseExpression(PREFIX)
+	return expression
+}
+
+func (parser *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    parser.currentToken,
+		Operator: parser.currentToken.Literal,
+		Left:     left,
+	}
+	precedence := parser.currentPrecedence()
+	parser.nextToken()
+	expression.Right = parser.parseExpression(precedence)
 	return expression
 }
