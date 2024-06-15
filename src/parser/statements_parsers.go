@@ -50,15 +50,23 @@ func (parser *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	}
 	return stmt
 }
+
 func (parser *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{
 		Token: parser.currentToken,
 		Value: parser.currentToken.Literal,
 	}
 }
+
+func (parser *Parser) noPrefixParseFnError(t token.TokenType) {
+	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+	parser.errors = append(parser.errors, msg)
+}
+
 func (parser *Parser) parseExpression(precedence int) ast.Expression {
 	prefix := parser.prefixParseFns[parser.currentToken.Type]
 	if prefix == nil {
+		parser.noPrefixParseFnError(parser.currentToken.Type)
 		return nil
 	}
 	leftExp := prefix()
@@ -75,4 +83,14 @@ func (parser *Parser) parseIntegralLiteral() ast.Expression {
 	}
 	lit.Value = value
 	return lit
+}
+
+func (parser *Parser) parsePrefixExpression() ast.Expression {
+	expression := &ast.PrefixExpression{
+		Token:    parser.currentToken,
+		Operator: parser.currentToken.Literal,
+	}
+	parser.nextToken()
+	expression.Right = parser.parseExpression(PREFIX)
+	return expression
 }
