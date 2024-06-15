@@ -1,6 +1,9 @@
 package parser
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/adamerikoff/ponGo/src/ast"
 	"github.com/adamerikoff/ponGo/src/token"
 )
@@ -36,4 +39,40 @@ func (parser *Parser) parseReturnStatement() *ast.ReturnStatement {
 		parser.nextToken()
 	}
 	return stmt
+}
+
+func (parser *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{Token: parser.currentToken}
+	stmt.Expression = parser.parseExpression(LOWEST)
+
+	if parser.SubsequentTokenIs(token.SEMICOLON) {
+		parser.nextToken()
+	}
+	return stmt
+}
+func (parser *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{
+		Token: parser.currentToken,
+		Value: parser.currentToken.Literal,
+	}
+}
+func (parser *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := parser.prefixParseFns[parser.currentToken.Type]
+	if prefix == nil {
+		return nil
+	}
+	leftExp := prefix()
+	return leftExp
+}
+
+func (parser *Parser) parseIntegralLiteral() ast.Expression {
+	lit := &ast.IntegerLiteral{Token: parser.currentToken}
+	value, err := strconv.ParseInt(parser.currentToken.Literal, 0, 64)
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as integer", parser.currentToken.Literal)
+		parser.errors = append(parser.errors, msg)
+		return nil
+	}
+	lit.Value = value
+	return lit
 }

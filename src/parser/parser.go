@@ -7,11 +7,19 @@ import (
 	"github.com/adamerikoff/ponGo/src/lexer"
 )
 
+type (
+	prefixParseFn func() ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression
+)
+
 type Parser struct {
 	lexer           *lexer.Lexer
 	currentToken    token.Token
 	subsequentToken token.Token
 	errors          []string
+
+	prefixParseFns map[token.TokenType]prefixParseFn
+	infixParseFns  map[token.TokenType]infixParseFn
 }
 
 func NewParser(lexer *lexer.Lexer) *Parser {
@@ -19,6 +27,9 @@ func NewParser(lexer *lexer.Lexer) *Parser {
 		lexer:  lexer,
 		errors: []string{},
 	}
+	parser.prefixParseFns = make(map[token.TokenType]prefixParseFn)
+	parser.registerPrefix(token.IDENTIFIER, parser.parseIdentifier)
+	parser.registerPrefix(token.INTEGER, parser.parseIntegralLiteral)
 	// Read two tokens, so curToken and peekToken are both set
 	parser.nextToken()
 	parser.nextToken()
@@ -45,4 +56,12 @@ func (parser *Parser) ParseProgram() *ast.Program {
 		parser.nextToken()
 	}
 	return program
+}
+
+func (parser *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
+	parser.prefixParseFns[tokenType] = fn
+}
+
+func (parser *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
+	parser.infixParseFns[tokenType] = fn
 }
