@@ -24,3 +24,16 @@ func (parser *Parser) parseLetStatement() *ast.LetStatement {
 	}
 	return stmt
 }
+
+func (parser *Parser) parseReturnStatement() *ast.ReturnStatement {
+	stmt := &ast.ReturnStatement{Token: parser.currentToken}
+
+	parser.nextToken()
+
+	// TODO: We're skipping the expressions until we
+	// encounter a semicolon
+	for !parser.currentTokenIs(token.SEMICOLON) {
+		parser.nextToken()
+	}
+	return stmt
+}
