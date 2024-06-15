@@ -11,16 +11,22 @@ type Parser struct {
 	lexer           *lexer.Lexer
 	currentToken    token.Token
 	subsequentToken token.Token
+	errors          []string
 }
 
 func NewParser(lexer *lexer.Lexer) *Parser {
 	parser := &Parser{
-		lexer: lexer,
+		lexer:  lexer,
+		errors: []string{},
 	}
 	// Read two tokens, so curToken and peekToken are both set
 	parser.nextToken()
 	parser.nextToken()
 	return parser
+}
+
+func (parser *Parser) Errors() []string {
+	return parser.errors
 }
 
 func (parser *Parser) nextToken() {
