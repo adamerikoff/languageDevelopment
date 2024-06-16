@@ -4,20 +4,18 @@ import (
 	"testing"
 
 	"github.com/adamerikoff/ponGo/src/token"
-
-	"github.com/adamerikoff/ponGo/src/ast"
 )
 
 func TestString(t *testing.T) {
-	program := &ast.Program{
-		Statements: []ast.Statement{
-			&ast.LetStatement{
+	program := &Program{
+		Statements: []Statement{
+			&LetStatement{
 				Token: token.Token{Type: token.LET, Literal: "let"},
-				Name: &ast.Identifier{
+				Name: &Identifier{
 					Token: token.Token{Type: token.IDENTIFIER, Literal: "myVar"},
 					Value: "myVar",
 				},
-				Value: &ast.Identifier{
+				Value: &Identifier{
 					Token: token.Token{Type: token.IDENTIFIER, Literal: "anotherVar"},
 					Value: "anotherVar",
 				},

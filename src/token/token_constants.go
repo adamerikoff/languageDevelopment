@@ -7,17 +7,18 @@ const (
 	IDENTIFIER = "IDENTIFIER"
 	INTEGER    = "INTEGER"
 
-	ASSIGN      = "="
-	PLUS        = "+"
-	MINUS       = "-"
-	ASTERISK    = "*"
-	SLASH       = "/"
-	INFERIOR    = "<"
-	SUPERIOR    = ">"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	ASTERISK = "*"
+	SLASH    = "/"
+
+	INFERIOR = "<"
+	SUPERIOR = ">"
+
 	EXCLAMATION = "!"
 	EQUAL       = "=="
 	NOT_EQUAL   = "!="
-	//AMPERSAND = "&"
 
 	COMMA     = ","
 	SEMICOLON = ";"

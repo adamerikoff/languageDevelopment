@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/adamerikoff/ponGo/src/token"
 )
@@ -19,6 +20,26 @@ type Statement interface {
 type Expression interface {
 	Node
 	expressionNode()
+}
+
+type Program struct {
+	Statements []Statement
+}
+
+func (program *Program) TokenLiteral() string {
+	if len(program.Statements) > 0 {
+		return program.Statements[0].TokenLiteral()
+	} else {
+		return ""
+	}
+}
+
+func (program *Program) String() string {
+	var out bytes.Buffer
+	for _, s := range program.Statements {
+		out.WriteString(s.String())
+	}
+	return out.String()
 }
 
 type Identifier struct {
@@ -94,6 +115,38 @@ func (expressionStatement *ExpressionStatement) String() string {
 	return ""
 }
 
+type BlockStatement struct {
+	Token      token.Token // the { token
+	Statements []Statement
+}
+
+func (blockStatement *BlockStatement) statementNode() {}
+func (blockStatement *BlockStatement) TokenLiteral() string {
+	return blockStatement.Token.Literal
+}
+func (blockStatement *BlockStatement) String() string {
+	var out bytes.Buffer
+
+	for _, s := range blockStatement.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
+
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
+func (boolean *Boolean) expressionNode() {}
+func (boolean *Boolean) TokenLiteral() string {
+	return boolean.Token.Literal
+}
+func (boolean *Boolean) String() string {
+	return boolean.Token.Literal
+}
+
 type IntegerLiteral struct {
 	Token token.Token
 	Value int64
@@ -141,6 +194,77 @@ func (inflixExpression *InfixExpression) String() string {
 	out.WriteString(inflixExpression.Left.String())
 	out.WriteString(" " + inflixExpression.Operator + " ")
 	out.WriteString(inflixExpression.Right.String())
+	out.WriteString(")")
+	return out.String()
+}
+
+type IfExpression struct {
+	Token       token.Token // The 'if' token
+	Condition   Expression
+	Consequence *BlockStatement
+	Alternative *BlockStatement
+}
+
+func (ifExpression *IfExpression) expressionNode() {}
+func (ifExpression *IfExpression) TokenLiteral() string {
+	return ifExpression.Token.Literal
+}
+func (ifExpression *IfExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("if")
+	out.WriteString(ifExpression.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(ifExpression.Consequence.String())
+	if ifExpression.Alternative != nil {
+		out.WriteString("else ")
+		out.WriteString(ifExpression.Alternative.String())
+	}
+	return out.String()
+}
+
+type FunctionLiteral struct {
+	Token      token.Token // The 'fn' token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (functionLiteral *FunctionLiteral) expressionNode() {}
+func (functionLiteral *FunctionLiteral) TokenLiteral() string {
+	return functionLiteral.Token.Literal
+}
+func (functionLiteral *FunctionLiteral) String() string {
+	var out bytes.Buffer
+	params := []string{}
+	for _, p := range functionLiteral.Parameters {
+		params = append(params, p.String())
+	}
+	out.WriteString(functionLiteral.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") ")
+	out.WriteString(functionLiteral.Body.String())
+	return out.String()
+}
+
+type CallExpression struct {
+	Token     token.Token // The '(' token
+	Function  Expression  // Identifier or FunctionLiteral
+	Arguments []Expression
+}
+
+func (callExpression *CallExpression) expressionNode() {}
+func (callExpression *CallExpression) TokenLiteral() string {
+	return callExpression.Token.Literal
+}
+func (callExpression *CallExpression) String() string {
+	var out bytes.Buffer
+	args := []string{}
+	for _, a := range callExpression.Arguments {
+		args = append(args, a.String())
+	}
+	out.WriteString(callExpression.Function.String())
+	out.WriteString("(")
+	out.WriteString(strings.Join(args, ", "))
 	out.WriteString(")")
 	return out.String()
 }
