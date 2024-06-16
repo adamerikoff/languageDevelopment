@@ -93,21 +93,19 @@ func isDigit(ch byte) bool {
 }
 
 func (lexer *Lexer) readCharacter() {
-	switch {
-	case lexer.readPosition >= len(lexer.input):
+	if lexer.readPosition >= len(lexer.input) {
 		lexer.character = 0
-	default:
+	} else {
 		lexer.character = lexer.input[lexer.readPosition]
-		lexer.currentPosition = lexer.readPosition
-		lexer.readPosition += 1
 	}
+	lexer.currentPosition = lexer.readPosition
+	lexer.readPosition += 1
 }
 
 func (lexer *Lexer) inspectNextCharacter() byte {
-	switch {
-	case lexer.readPosition >= len(lexer.input):
+	if lexer.readPosition >= len(lexer.input) {
 		return 0
-	default:
+	} else {
 		return lexer.input[lexer.readPosition]
 	}
 }
@@ -126,8 +124,7 @@ func (lexer *Lexer) readNumber() string {
 	for isDigit(lexer.character) {
 		lexer.readCharacter()
 	}
-	endPosition := lexer.currentPosition
-	return lexer.input[startPosition:endPosition]
+	return lexer.input[startPosition:lexer.currentPosition]
 }
 
 func (lexer *Lexer) skipWhitespace() {

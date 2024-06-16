@@ -5,9 +5,8 @@ import (
 	"strconv"
 
 	"github.com/adamerikoff/ponGo/src/ast"
-	"github.com/adamerikoff/ponGo/src/token"
-
 	"github.com/adamerikoff/ponGo/src/lexer"
+	"github.com/adamerikoff/ponGo/src/token"
 )
 
 type (
@@ -24,6 +23,29 @@ type Parser struct {
 
 	prefixParseFns map[token.TokenType]prefixParseFn
 	infixParseFns  map[token.TokenType]infixParseFn
+}
+
+const (
+	_ int = iota
+	LOWEST
+	EQUALS      // ==
+	LESSGREATER // > or <
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -X or !X
+	CALL        // myFunction(X)
+)
+
+var precedences = map[token.TokenType]int{
+	token.EQUAL:            EQUALS,
+	token.NOT_EQUAL:        EQUALS,
+	token.INFERIOR:         LESSGREATER,
+	token.SUPERIOR:         LESSGREATER,
+	token.PLUS:             SUM,
+	token.MINUS:            SUM,
+	token.SLASH:            PRODUCT,
+	token.ASTERISK:         PRODUCT,
+	token.LEFT_PARENTHESIS: CALL,
 }
 
 func NewParser(lexer *lexer.Lexer) *Parser {
@@ -52,7 +74,6 @@ func NewParser(lexer *lexer.Lexer) *Parser {
 	parser.registerInfix(token.NOT_EQUAL, parser.parseInfixExpression)
 	parser.registerInfix(token.INFERIOR, parser.parseInfixExpression)
 	parser.registerInfix(token.SUPERIOR, parser.parseInfixExpression)
-
 	parser.registerInfix(token.LEFT_PARENTHESIS, parser.parseCallExpression)
 
 	parser.nextToken()
@@ -291,7 +312,6 @@ func (parser *Parser) parseFunctionLiteral() ast.Expression {
 		return nil
 	}
 	lit.Parameters = parser.parseFunctionParameters()
-
 	if !parser.expectSubsequentToken(token.LEFT_BRACE) {
 		return nil
 	}
@@ -322,28 +342,27 @@ func (parser *Parser) parseFunctionParameters() []*ast.Identifier {
 
 func (parser *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 	exp := &ast.CallExpression{Token: parser.currentToken, Function: function}
-	exp.Arguments = parser.parseCallArguments()
+	exp.Arguments = parser.parseExpressionList(token.RIGHT_PARENTHESIS)
 	return exp
 }
 
-func (parser *Parser) parseCallArguments() []ast.Expression {
-	args := []ast.Expression{}
-	if parser.subsequentTokenIs(token.RIGHT_PARENTHESIS) {
+func (parser *Parser) parseExpressionList(end token.TokenType) []ast.Expression {
+	list := []ast.Expression{}
+	if parser.subsequentTokenIs(end) {
 		parser.nextToken()
-		return args
+		return list
 	}
 	parser.nextToken()
-	args = append(args, parser.parseExpression(LOWEST))
-
+	list = append(list, parser.parseExpression(LOWEST))
 	for parser.subsequentTokenIs(token.COMMA) {
 		parser.nextToken()
 		parser.nextToken()
-		args = append(args, parser.parseExpression(LOWEST))
+		list = append(list, parser.parseExpression(LOWEST))
 	}
-	if !parser.expectSubsequentToken(token.RIGHT_PARENTHESIS) {
+	if !parser.expectSubsequentToken(end) {
 		return nil
 	}
-	return args
+	return list
 }
 
 func (parser *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
