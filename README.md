@@ -2,15 +2,7 @@
 
 <img src="https://github.com/adamerikoff/ponGo/blob/main/pongo.jpg" align="center" alt="Size Limit logo by Anton Lovchikov" width="100">
 
-**ponGo** is a simple and expressive programming language implemented in Go, designed to be easy to learn and use for both beginners and experienced developers alike.
-
-## Features
-
-- **Pet Project**: ponGo is a personal project aimed at exploring language design and implementation. It's a great way to learn about compilers and interpreters.
-- **Simplicity**: ponGo aims to be simple and easy to understand, with a clean syntax inspired by popular programming languages.
-- **Expressiveness**: Despite its simplicity, ponGo is capable of expressing a wide range of computational tasks, from basic arithmetic operations to complex control flow and data manipulation.
-- **Flexibility**: The language is designed to be flexible, allowing developers to build various types of applications, including command-line tools, web servers, and more.
-- **Interpreted**: ponGo is implemented as an interpreter in Go, making it easy to run and experiment with code without the need for compilation.
+**ponGo** This repository contains an interpreter for the "ponGo" programming language, as described in [Write an Interpreter in Go](https://interpreterbook.com).
 
 ## Getting Started
 
@@ -32,35 +24,19 @@ To start using ponGo, follow these steps:
 
 ## Syntax Example
 ```
-	@ five = 5.
-	@ ten = 10.
+// Define a factorial function
+let factorial = fn(x) {
+    if (x == 0) {
+        return 1;
+    } else {
+        return x * factorial(x - 1);
+    }
+};
 
-	@ add = f(x, y) {
-		x + y.
-	}.
-	@ result = add(five, ten).
+// Define a variable and assign the result of the factorial function
+let result = factorial(5);
 
-	!-/*5.
-   	5 < 10 > 5.
+// Print the result
+puts(result);  // Output should be 120
 
-	if (5 < 10) {
-		<< T.
-	} else {
-		<< F.
- 	}
-	10 == 10.
-	10 != 9.
-   
 ```
-
-## Documentation
-
-to add
-
-## Contributing
-
-Contributions to ponGo are welcome! Whether you want to report a bug, suggest a feature, or contribute code, please feel free to open an issue or submit a pull request on GitHub.
-
-## License
-
-ponGo is open-source software released under the [MIT License](LICENSE). Feel free to use, modify, and distribute it according to your needs.
