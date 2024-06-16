@@ -15,6 +15,6 @@ func main() {
 	}
 	fmt.Printf("Hello %s! This is the ponGo programming language!\n",
 		user.Username)
-	fmt.Printf("Feel free to type in commands\n")
+	fmt.Printf("Type your commands\n")
 	repl.Start(os.Stdin, os.Stdout)
 }
