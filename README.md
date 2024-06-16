@@ -2,7 +2,7 @@
 
 <img src="https://github.com/adamerikoff/ponGo/blob/main/pongo.jpg" align="center" alt="Size Limit logo by Anton Lovchikov" width="100">
 
-**ponGo** This repository contains an interpreter for the "ponGo" programming language, as described in [Write an Interpreter in Go](https://interpreterbook.com).
+**ponGo** repository contains an interpreter for the "ponGo" programming language, as described in [Write an Interpreter in Go](https://interpreterbook.com).
 
 ## Getting Started
 
