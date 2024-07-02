@@ -22,4 +22,10 @@ assert.strictEqual(eva.eval(['*', ['*', 2, 3], 4]), 24);
 assert.strictEqual(eva.eval(['/', 6, 2]), 3);
 assert.strictEqual(eva.eval(['/', ['/', 12, 3], 2]), 2);
 
+assert.strictEqual(eva.eval(['assign', 'x', 90]), 90);
+assert.strictEqual(eva.eval('x'), 90);
+assert.strictEqual(eva.eval(['assign', 'x999', 40]), 40);
+assert.strictEqual(eva.eval('x999'), 40);
+//assert.strictEqual(eva.eval(['assign', 'z', '"universe"']), 'universe');
+
 console.log('All assertions passed!')

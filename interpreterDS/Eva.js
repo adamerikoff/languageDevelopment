@@ -1,5 +1,12 @@
+import Env from './Env.js';
+
 class Eva {
-    eval(expression) {
+
+    constructor(global = new Env()) {
+        this.global = global;
+    }
+
+    eval(expression, env = this.global) {
         if (this.isNumber(expression)) {
             return expression;
         }
@@ -9,28 +16,44 @@ class Eva {
         // ----------------------------------
         // ----------------------------------
         if (expression[0] === '+') {
-            return this.eval(expression[1]) + this.eval(expression[2])
+            return this.eval(expression[1]) + this.eval(expression[2]);
         }
         if (expression[0] === '-') {
-            return this.eval(expression[1]) - this.eval(expression[2])
+            return this.eval(expression[1]) - this.eval(expression[2]);
         }
         if (expression[0] === '/') {
-            return this.eval(expression[1]) / this.eval(expression[2])
+            return this.eval(expression[1]) / this.eval(expression[2]);
         }
         if (expression[0] === '*') {
-            return this.eval(expression[1]) * this.eval(expression[2])
+            return this.eval(expression[1]) * this.eval(expression[2]);
         }
         // ----------------------------------
         // ----------------------------------
-        throw 'Unimplemented';
+        if (expression[0] === 'assign') {
+            const [_, name, value] = expression;
+            return env.define(name, value);
+        }
+        // ----------------------------------
+        // ----------------------------------
+        if (this.isVariable(expression)) {
+            return env.getVariableValue(expression);
+        }
+        throw `Unimplemented ${JSON.stringify(expression)}`;
     }
-
+    // ----------------------------------
+    // ----------------------------------
+    // ----------------------------------
+    // ----------------------------------
+    // ----------------------------------
+    // ----------------------------------
     isNumber(expression) {
         return typeof expression === 'number';
     }
-
     isString(expression) {
         return typeof expression === 'string' && expression[0] === '"' && expression.slice(-1) === '"';
+    }
+    isVariable(expression) {
+        return typeof expression === 'string' && /^[a-z][0-9]*$/.test(expression);
     }
 }
 
