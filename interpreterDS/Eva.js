@@ -6,9 +6,22 @@ class Eva {
         if (this.isString(expression)) {
             return expression.slice(1, -1);
         }
+        // ----------------------------------
+        // ----------------------------------
         if (expression[0] === '+') {
-            return expression[1] + expression[2]
+            return this.eval(expression[1]) + this.eval(expression[2])
         }
+        if (expression[0] === '-') {
+            return this.eval(expression[1]) - this.eval(expression[2])
+        }
+        if (expression[0] === '/') {
+            return this.eval(expression[1]) / this.eval(expression[2])
+        }
+        if (expression[0] === '*') {
+            return this.eval(expression[1]) * this.eval(expression[2])
+        }
+        // ----------------------------------
+        // ----------------------------------
         throw 'Unimplemented';
     }
 
