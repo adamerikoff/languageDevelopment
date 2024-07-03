@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import Env from './Env.js';
+import yyparse from './aileenParser.js';
 
 const ExecutionStack = [];
 
@@ -208,7 +209,7 @@ class Aileen {
             const [_tag, symbols, name] =
                 expression.length === 2 ? [null, null, expression[1]] : expression;
             const moduleSrc = fs.readFileSync(`./modules/${name}.eva`, "utf-8");
-            const body = aileenParser.parse(`(begin ${moduleSrc})`);
+            const body = yyparse.parse(`(begin ${moduleSrc})`);
             let moduleExp;
             if (expression.length === 2) {
                 moduleExp = ["module", name, body];
