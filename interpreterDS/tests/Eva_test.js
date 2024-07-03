@@ -26,6 +26,56 @@ assert.strictEqual(eva.eval(['assign', 'x', 90]), 90);
 assert.strictEqual(eva.eval('x'), 90);
 assert.strictEqual(eva.eval(['assign', 'x999', 40]), 40);
 assert.strictEqual(eva.eval('x999'), 40);
+assert.strictEqual(eva.eval(['assign', 'k', ['/', 20, 10]]), 2);
+assert.strictEqual(eva.eval('k'), 2);
 //assert.strictEqual(eva.eval(['assign', 'z', '"universe"']), 'universe');
+
+assert.strictEqual(eva.eval(
+    ['section',
+        ['assign', 'r', 11],
+        ['assign', 'w', 5],
+        ['+', ['-', ['*', 'r', 'w'],5],60],
+    ]),
+    110);
+assert.strictEqual(eva.eval(
+        ['section',
+            ['assign', 'r', 11],
+            ['section',
+                ['assign', 'r', 5],
+                'r'
+            ],
+            'r'
+        ]),
+    11);
+
+assert.strictEqual(eva.eval(
+        ['section',
+            ['assign', 'x', 10],
+            ['section',
+                ['assign', 'x', 30],
+                'x'
+            ],
+            'x'
+        ]),
+    10);
+assert.strictEqual(eva.eval(
+        ['section',
+            ['assign', 'value', 10],
+            ['assign', 'result', ['section',
+                ['assign', 'x', ['+', 'value', 10]],
+                    'x'
+                ]],
+            'result'
+        ]),
+    20);
+assert.strictEqual(eva.eval(
+        ['section',
+            ['assign', 'data', 22],
+            ['section',
+                ['reassign', 'data', 333],
+            ],
+            'data'
+        ]),
+    333);
 
 console.log('All assertions passed!')

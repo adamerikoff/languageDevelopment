@@ -1,16 +1,27 @@
 class Env {
-    constructor(record = {}) {
+    constructor(record = {}, parent = null) {
         this.record = record;
+        this.parent = parent;
     }
-    define(name, value) {
+    eAssign(name, value) {
         this.record[name] = value;
-        return value
+        return value;
+    }
+    eReassign(name, value) {
+        this.resolve(name).record[name] = value;
+        return value;
     }
     getVariableValue(name) {
-        if (!this.record.hasOwnProperty(name)) {
-            throw new ReferenceError(`Unable to get variable value for ${name}`);
+        return this.resolve(name).record[name];
+    }
+    resolve(name) {
+        if (this.record.hasOwnProperty(name)) {
+            return this;
         }
-        return this.record[name];
+        if (this.parent === null) {
+            throw new ReferenceError(`Unable to resolve variable value for ${name}`);
+        }
+        return this.parent.resolve(name);
     }
 }
 

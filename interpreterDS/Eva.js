@@ -15,30 +15,36 @@ class Eva {
         }
         // ----------------------------------
         // ----------------------------------
-        if (expression[0] === '+') {
-            return this.eval(expression[1]) + this.eval(expression[2]);
-        }
-        if (expression[0] === '-') {
-            return this.eval(expression[1]) - this.eval(expression[2]);
-        }
-        if (expression[0] === '/') {
-            return this.eval(expression[1]) / this.eval(expression[2]);
-        }
-        if (expression[0] === '*') {
-            return this.eval(expression[1]) * this.eval(expression[2]);
-        }
-        // ----------------------------------
-        // ----------------------------------
-        if (expression[0] === 'assign') {
-            const [_, name, value] = expression;
-            return env.define(name, value);
+        if (Array.isArray(expression)) {
+            switch (expression[0]) {
+                case '+':
+                    return this.eval(expression[1], env) + this.eval(expression[2], env);
+                case '-':
+                    return this.eval(expression[1], env) - this.eval(expression[2], env);
+                case '/':
+                    return this.eval(expression[1], env) / this.eval(expression[2], env);
+                case '*':
+                    return this.eval(expression[1], env) * this.eval(expression[2], env);
+                case 'assign':
+                    const [_assign, assignName, assignValue] = expression;
+                    return env.eAssign(assignName, this.eval(assignValue, env));
+                case 'reassign':
+                    const [_reassign, reassignName, reassignValue] = expression;
+                    return env.eReassign(reassignName, this.eval(reassignValue, env));
+                case 'section':
+                    const sectionEnv = new Env({}, env);
+                    return this.evalSection(expression, sectionEnv);
+                default:
+                    throw new Error(`Unimplemented ${JSON.stringify(expression)}`);
+            }
         }
         // ----------------------------------
         // ----------------------------------
         if (this.isVariable(expression)) {
             return env.getVariableValue(expression);
         }
-        throw `Unimplemented ${JSON.stringify(expression)}`;
+
+        throw new Error(`Invalid expression: ${JSON.stringify(expression)}`);
     }
     // ----------------------------------
     // ----------------------------------
@@ -49,11 +55,22 @@ class Eva {
     isNumber(expression) {
         return typeof expression === 'number';
     }
+
     isString(expression) {
         return typeof expression === 'string' && expression[0] === '"' && expression.slice(-1) === '"';
     }
+
     isVariable(expression) {
-        return typeof expression === 'string' && /^[a-z][0-9]*$/.test(expression);
+        return typeof expression === 'string' && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(expression);
+    }
+
+    evalSection(section, env) {
+        let result;
+        const [_tag, ...expressions] = section;
+        expressions.forEach(expression => {
+            result = this.eval(expression, env);
+        });
+        return result;
     }
 }
 
