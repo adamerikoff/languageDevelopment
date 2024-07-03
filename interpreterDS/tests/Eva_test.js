@@ -77,5 +77,28 @@ assert.strictEqual(eva.eval(
             'data'
         ]),
     333);
-
+assert.strictEqual(eva.eval(
+    ['section',
+        ['assign', 'x', 10],
+        ['assign', 'y', 0],
+        ['assume', ['>', 'x', 10],
+            ['reassign', 'y', 20],
+            ['reassign', 'y', 30],
+        ],
+        'y'
+    ]),
+    30);
+assert.strictEqual(eva.eval(
+        ['section',
+            ['assign', 'counter', 0],
+            ['assign', 'result', 0],
+            ['loop', ['<', 'counter', 10],
+                ['section',
+                    ['reassign', 'result', ['+', 'result', 1]],
+                    ['reassign', 'counter', ['+', 'counter', 1]],
+                ],
+            ],
+            'result'
+        ]),
+    10);
 console.log('All assertions passed!')

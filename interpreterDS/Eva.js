@@ -25,6 +25,16 @@ class Eva {
                     return this.eval(expression[1], env) / this.eval(expression[2], env);
                 case '*':
                     return this.eval(expression[1], env) * this.eval(expression[2], env);
+                case '>':
+                    return this.eval(expression[1], env) > this.eval(expression[2], env);
+                case '>=':
+                    return this.eval(expression[1], env) >= this.eval(expression[2], env);
+                case '<':
+                    return this.eval(expression[1], env) < this.eval(expression[2], env);
+                case '<=':
+                    return this.eval(expression[1], env) <= this.eval(expression[2], env);
+                case '=':
+                    return this.eval(expression[1], env) === this.eval(expression[2], env);
                 case 'assign':
                     const [_assign, assignName, assignValue] = expression;
                     return env.eAssign(assignName, this.eval(assignValue, env));
@@ -34,6 +44,19 @@ class Eva {
                 case 'section':
                     const sectionEnv = new Env({}, env);
                     return this.evalSection(expression, sectionEnv);
+                case 'assume':
+                    const [_assume, assumeCondition, assumeConsequent, assumeAlternate] = expression;
+                    if (this.eval(assumeCondition, env)) {
+                        return this.eval(assumeConsequent, env);
+                    }
+                    return this.eval(assumeAlternate, env);
+                case 'loop':
+                    const [_loop, loopCondition, loopBody] = expression;
+                    let loopResult;
+                    while (this.eval(loopCondition, env)) {
+                        loopResult = this.eval(loopBody, env);
+                    }
+                    return loopResult;
                 default:
                     throw new Error(`Unimplemented ${JSON.stringify(expression)}`);
             }
@@ -43,7 +66,8 @@ class Eva {
         if (this.isVariable(expression)) {
             return env.getVariableValue(expression);
         }
-
+        // ----------------------------------
+        // ----------------------------------
         throw new Error(`Invalid expression: ${JSON.stringify(expression)}`);
     }
     // ----------------------------------
