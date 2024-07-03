@@ -28,5 +28,6 @@ class Env {
         }
         return this.parentEnv.determineEnv(varName);
     }
-
 }
+
+export default Env;
