@@ -1,7 +1,15 @@
 import assert from 'assert';
 import Eva from '../Eva.js';
 
+import yyparse from '../evaParser.js';
+
+
 const eva = new Eva();
+
+function test_string(eva, code, expected) {
+    const expression = yyparse.parse(code);
+    assert.strictEqual(eva.eval(expression), expected);
+}
 
 assert.strictEqual(eva.eval(1), 1);
 assert.strictEqual(eva.eval('"this is a string"'), 'this is a string');
@@ -101,4 +109,6 @@ assert.strictEqual(eva.eval(
             'result'
         ]),
     10);
+test_string(eva, '(+ 1 2)', 3);  // Ensure the list expression is complete
+test_string(eva,'(section(assign x 10)(assign y 30)(+ (* x 10) y))', 130);
 console.log('All assertions passed!')

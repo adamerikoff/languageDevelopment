@@ -18,5 +18,8 @@
     "url": "https://github.com/adamerikoff/lesLanguesDev/issues"
   },
   "homepage": "https://github.com/adamerikoff/lesLanguesDev",
-  "author": "ae"
+  "author": "ae",
+  "dependencies": {
+    "syntax-cli": "^0.1.27"
+  }
 }
