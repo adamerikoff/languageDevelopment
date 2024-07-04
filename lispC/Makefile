@@ -2,13 +2,13 @@
 CC = cc
 
 # Define compiler flags
-CFLAGS = -std=c99 -Wall
+CFLAGS = -std=c99 -Wall mpc.c -ledit
 
 # Define the target executable
-TARGET = main.out
+TARGET = a.out
 
 # Define the source file
-SOURCE = main.c
+SOURCE = parser.c
 
 # Default target to build the executable
 all: $(TARGET)
