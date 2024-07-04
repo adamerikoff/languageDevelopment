@@ -189,12 +189,16 @@ class Aileen {
                 instanceEnv,
                 ...args,
             ]);
+            instanceEnv.assignVariable("THIS", instanceEnv); // Ensure THIS is set
             return instanceEnv;
         }
 
         if (expression[0] === "PROPERTY") {
             const [_tag, instance, name] = expression;
             const instanceEnv = this.evaluateExpression(instance, env);
+            if (name === "THIS") {
+                return instanceEnv;
+            }
             return instanceEnv.retrieveVariable(name);
         }
 
@@ -276,6 +280,7 @@ class Aileen {
             activationRecord[param] = args[index];
         });
         const activationEnv = new Env(activationRecord, fn.env);
+        activationEnv.assignVariable("THIS", args[0]); // Ensure THIS is passed
         return this._evaluateBody(fn.body, activationEnv);
     }
     //-------------------------------------------------------------------
