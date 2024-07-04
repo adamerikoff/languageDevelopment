@@ -185,7 +185,7 @@ class Aileen {
             const classEnv = this.evaluateExpression(expression[1], env);
             const instanceEnv = new Env({}, classEnv);
             const args = expression.slice(2).map((arg) => this.evaluateExpression(arg, env));
-            this._callCustomFunction(classEnv.retrieveVariable("constructor"), [
+            this._callCustomFunction(classEnv.retrieveVariable("INIT"), [
                 instanceEnv,
                 ...args,
             ]);

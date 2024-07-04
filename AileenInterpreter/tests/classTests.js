@@ -6,7 +6,7 @@ function runClassTests(aileen) {
         `
     (CLASS Point ZERO
       (SECTION
-        (FUNCTION constructor (THIS x y)
+        (FUNCTION INIT (THIS x y)
           (SECTION
             (REASSIGN (PROPERTY THIS x) x)
             (REASSIGN (PROPERTY THIS y) y)))
@@ -23,10 +23,10 @@ function runClassTests(aileen) {
         `
     (CLASS Point3D Point
       (SECTION
-        (FUNCTION constructor (THIS x y z)
+        (FUNCTION INIT (THIS x y z)
           (SECTION
-            ((PROPERTY (PARENT Point3D) constructor) THIS x y)
-            (REASSIGN (PROPERTY this z) z)))
+            ((PROPERTY (PARENT Point3D) INIT) THIS x y)
+            (REASSIGN (PROPERTY THIS z) z)))
         (FUNCTION calc (this)
           (+ ((PROPERTY (PARENT Point3D) calc) THIS)
               (PROPERTY THIS z)))))
