@@ -37,4 +37,16 @@
 (display "Value:" ((PROPERTY p2 calc) p2))
 
 
+(ASSIGN length 10)
+(ASSIGN width 5)
+
+(ASSIGN area (* length width))
+
+(display "Rectangle Dimensions:")
+(display "Length: " length)
+(display "Width: " width)
+(display "Area: " area)
+
+
+
 
