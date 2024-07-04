@@ -64,7 +64,7 @@ class Aileen {
     }
 
     evaluateGlobal(expression) {
-        return this._evalateBody(expression, this.globalEnv);
+        return this._evaluateBody(expression, this.globalEnv);
     }
 
     evaluateExpression(expression, env = this.globalEnv) {
@@ -104,7 +104,7 @@ class Aileen {
 
         if (expression[0] === "SECTION") {
             const blockEnv = new Env({}, env);
-            return this._evalateBlock(expression, blockEnv);
+            return this._evaluateBlock(expression, blockEnv);
         }
 
         if (expression[0] === "ASSIGN") {
@@ -127,7 +127,7 @@ class Aileen {
         }
 
         if (expression[0] === "CONDITION") {
-            const [_tag, condition, consequent, alternate] = exp;
+            const [_tag, condition, consequent, alternate] = expression;
             if (this.evaluateExpression(condition, env)) {
                 return this.evaluateExpression(consequent, env);
             } else {
@@ -150,12 +150,12 @@ class Aileen {
         }
 
         if (expression[0] === "SWITCH") {
-            const conditionExp = this._transformSwitchToIf(expression);
+            const conditionExp = this._transformSwitchToCondition(expression);
             return this.evaluateExpression(conditionExp, env);
         }
 
-        if (expression[0] === "FORLOOP") {
-            const loopExp = this._transformForToWhile(exp);
+        if (expression[0] === "LOOPFOR") {
+            const loopExp = this._transformForToWhile(expression);
             return this.evaluateExpression(loopExp, env);
         }
 
@@ -172,7 +172,7 @@ class Aileen {
             const [_tag, name, parent, body] = expression;
             const parentEnv = this.evaluateExpression(parent, env) || env;
             const classEnv = new Env({}, parentEnv);
-            this._evalateBody(body, classEnv);
+            this._evaluateBody(body, classEnv);
             return env.assignVariable(name, classEnv);
         }
 
@@ -184,7 +184,7 @@ class Aileen {
         if (expression[0] === "NEW") {
             const classEnv = this.evaluateExpression(expression[1], env);
             const instanceEnv = new Env({}, classEnv);
-            const args = expression.slice(2).map((arg) => this.eval(arg, env));
+            const args = expression.slice(2).map((arg) => this.evaluateExpression(arg, env));
             this._callCustomFunction(classEnv.retrieveVariable("constructor"), [
                 instanceEnv,
                 ...args,
@@ -201,7 +201,7 @@ class Aileen {
         if (expression[0] === "MODULE") {
             const [_tag, name, body] = expression;
             const moduleEnv = new Env({}, env);
-            this._evalateBody(body, moduleEnv);
+            this._evaluateBody(body, moduleEnv);
             return env.assignVariable(name, moduleEnv);
         }
 
@@ -209,15 +209,15 @@ class Aileen {
             const [_tag, symbols, name] =
                 expression.length === 2 ? [null, null, expression[1]] : expression;
             const moduleSrc = fs.readFileSync(`./modules/${name}.eva`, "utf-8");
-            const body = yyparse.parse(`(begin ${moduleSrc})`);
+            const body = yyparse.parse(`(SECTION ${moduleSrc})`);
             let moduleExp;
             if (expression.length === 2) {
-                moduleExp = ["module", name, body];
+                moduleExp = ["MODULE", name, body];
             } else {
                 const filteredBody = body.filter(
                     (element, index) => index === 0 || symbols.includes(element[1])
                 );
-                moduleExp = ["module", name, filteredBody];
+                moduleExp = ["MODULE", name, filteredBody];
             }
             return this.evaluateExpression(moduleExp, this.globalEnv);
         }
@@ -236,7 +236,7 @@ class Aileen {
             return result;
         }
 
-        throw new EvalError(`Unimplemented: ${JSON.stringify(exp)}`);
+        throw new EvalError(`Unimplemented: ${JSON.stringify(expression)}`);
     }
     //-------------------------------------------------------------------
     //-------------------------------------------------------------------
@@ -276,7 +276,7 @@ class Aileen {
             activationRecord[param] = args[index];
         });
         const activationEnv = new Env(activationRecord, fn.env);
-        return this._evalateBody(fn.body, activationEnv);
+        return this._evaluateBody(fn.body, activationEnv);
     }
     //-------------------------------------------------------------------
     //-------------------------------------------------------------------
@@ -298,7 +298,7 @@ class Aileen {
         return typeof exp === "string" && /^[+\-*/<>=a-zA-Z0-9_]+$/.test(exp);
     }
 
-    _evalateBlock(block, env) {
+    _evaluateBlock(block, env) {
         let result;
         const [_tag, ...expressions] = block;
         expressions.forEach((exp) => {
@@ -307,9 +307,9 @@ class Aileen {
         return result;
     }
 
-    _evalateBody(body, env) {
-        if (body[0] === "begin") {
-            return this._evalateBlock(body, env);
+    _evaluateBody(body, env) {
+        if (body[0] === "SECTION") {
+            return this._evaluateBlock(body, env);
         }
         return this.evaluateExpression(body, env);
     }
