@@ -208,7 +208,7 @@ class Aileen {
         if (expression[0] === "LOAD") {
             const [_tag, symbols, name] =
                 expression.length === 2 ? [null, null, expression[1]] : expression;
-            const moduleSrc = fs.readFileSync(`./modules/${name}.eva`, "utf-8");
+            const moduleSrc = fs.readFileSync(`./LIBRARIES/${name}.aileen`, "utf-8");
             const body = yyparse.parse(`(SECTION ${moduleSrc})`);
             let moduleExp;
             if (expression.length === 2) {
@@ -290,12 +290,12 @@ class Aileen {
         return typeof expression === 'number';
     }
 
-    _isString(exp) {
-        return typeof exp === "string" && exp[0] === '"' && exp.slice(-1) === '"';
+    _isString(expression) {
+        return typeof expression === "string" && expression[0] === '"' && expression.slice(-1) === '"';
     }
 
-    _isVariableName(exp) {
-        return typeof exp === "string" && /^[+\-*/<>=a-zA-Z0-9_]+$/.test(exp);
+    _isVariableName(expression) {
+        return typeof expression === "string" && /^[+\-*/<>=a-zA-Z0-9_]+$/.test(expression);
     }
 
     _evaluateBlock(block, env) {
