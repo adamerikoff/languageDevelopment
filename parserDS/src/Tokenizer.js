@@ -5,6 +5,10 @@ class Tokenizer {
         this._cursor = 0;
     }
 
+    isEOF() {
+        return this._cursor === this._string.length;
+    }
+
     hasMoreTokens() {
         return this._cursor < this._string.length;
     }
@@ -23,8 +27,22 @@ class Tokenizer {
             return {
                 type: "NUMBER",
                 value: number
-            }
+            };
         }
+
+        if (string[0] === "'") {
+            let s = "";
+            do {
+                s += string[this._cursor++];
+            } while (string[this._cursor] !== "'" && !this.isEOF());
+            s += this._cursor++;
+            return {
+              type: "STRING",
+              value: s,
+            };
+        }
+
+        return null
     }
 }
 

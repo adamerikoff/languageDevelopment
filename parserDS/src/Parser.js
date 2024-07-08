@@ -17,8 +17,17 @@ class Parser {
     Program() {
         return {
             type: "Program",
-            body: this.NumericLiteral(),
+            body: this.Literal(),
         };
+    }
+
+    Literal() {
+        switch (this._lookahead.type) {
+            case "NUMBER":
+                return this.NumericLiteral();
+            case "STRING":
+                    return this.StringLiteral();
+        }
     }
 
     NumericLiteral() {
@@ -26,6 +35,14 @@ class Parser {
         return {
             type: "NumericLiteral",
             value: Number(token.value)
+        };
+    }
+
+    StringLiteral() {
+        const token = this._eat("STRING");
+        return {
+            type: "StringLiteral",
+            value: token.value.slice(1, -1),
         };
     }
 
