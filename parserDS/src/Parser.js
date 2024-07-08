@@ -2,6 +2,8 @@ class Parser {
 
     parse(string) {
         this._string = string;
+
+        return this.Program();
     }
 
     Program() {
