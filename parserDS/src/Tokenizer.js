@@ -1,6 +1,8 @@
 const RegExRules = [
-    [/^[-+]?\d*\.?\d+$/, "NUMBER"],
-    [/'[^"]*'/, "STRING"],
+    [/^\s+/, null], // Whitespace
+    [/^\/\/.*/, null], // Single line comment
+    [/^[-+]?\d*\.?\d+/, "NUMBER"], // Number
+    [/^'[^']*'/, "STRING"], // String
 ];
 
 class Tokenizer {
@@ -30,6 +32,9 @@ class Tokenizer {
             if (tokenValue == null) {
                 continue;
             }
+            if (tokenType == null) {
+                return this.getNextToken();
+            }
             return {
                 type: tokenType,
                 value: tokenValue,
@@ -43,7 +48,7 @@ class Tokenizer {
         if (matched == null) {
             return null
         }
-        this._cursor = matched[0].length;
+        this._cursor += matched[0].length;
         return matched[0];
     }
 }
