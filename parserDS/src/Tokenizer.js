@@ -3,6 +3,8 @@ const RegExRules = [
     [/^\/\/.*/, null], // Single line comment
     [/^\/\*[\s\S]*?\*\//, null], // Multi line comment
     [/^;/, ";"], // Delimiters
+    [/^\{/, "{"], // Delimiters
+    [/^\}/, "}"], // Delimiters
     [/^[-+]?\d*\.?\d+/, "NUMBER"], // Number
     [/^'[^']*'/, "STRING"], // String
 ];
