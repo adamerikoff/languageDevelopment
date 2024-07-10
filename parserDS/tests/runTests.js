@@ -74,6 +74,58 @@ const tests = [
             }
         ],
     }],
+    [`5 + 5;`, {
+        type: "Program",
+        body: [
+            {
+                type: "ExpressionStatement",
+                expression: [
+                    {
+                        type: "BinaryExpression",
+                        operator: "+",
+                        left: {
+                            type: "NumericLiteral",
+                            value: 5,
+                        },
+                        right: {
+                            type: "NumericLiteral",
+                            value: 5,
+                        },
+                    }
+                ]
+            }
+        ],
+    }],
+    [`5 + 4 - 3;`, {
+        type: "Program",
+        body: [
+            {
+                type: "ExpressionStatement",
+                expression: [
+                    {
+                        type: "BinaryExpression",
+                        operator: "-",
+                        left: {
+                            type: "BinaryExpression",
+                            operator: "+",
+                            left: {
+                                type: "NumericLiteral",
+                                value: 5,
+                            },
+                            right: {
+                                type: "NumericLiteral",
+                                value: 4,
+                            },
+                        },
+                        right: {
+                            type: "NumericLiteral",
+                            value: 3,
+                        },
+                    }
+                ]
+            }
+        ],
+    }],
 ];
 
 tests.forEach((t) => {

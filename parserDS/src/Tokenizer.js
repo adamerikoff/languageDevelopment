@@ -5,6 +5,7 @@ const RegExRules = [
     [/^;/, ";"], // Delimiters
     [/^\{/, "{"], // Delimiters
     [/^\}/, "}"], // Delimiters
+    [/^[+\-]/, "ADDITIVE_OPERATOR"], // +- OPERATORS
     [/^[-+]?\d*\.?\d+/, "NUMBER"], // Number
     [/^'[^']*'/, "STRING"], // String
 ];
