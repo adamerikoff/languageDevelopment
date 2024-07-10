@@ -11,29 +11,46 @@ function test(program, expected) {
 }
 
 const tests = [
-    ["42", {
+    ["42;", {
         type: "Program",
-        body: {
-            type: "NumericLiteral",
-            value: 42,
-        }
+        body: [
+            {
+                type: "ExpressionStatement",
+                expression: {
+                    type: "NumericLiteral",
+                    value: 42,
+                }
+            }
+        ],
     }],
-    ["52", {
+    ["33;", {
         type: "Program",
-        body: {
-            type: "NumericLiteral",
-            value: 52,
-        }
+        body: [
+            {
+                type: "ExpressionStatement",
+                expression: {
+                    type: "NumericLiteral",
+                    value: 33,
+                }
+            }
+        ],
     }],
-    ["'string string'", {
+    ["'hi there';", {
         type: "Program",
-        body: {
-            type: "StringLiteral",
-            value: "string string",
-        }
+        body: [
+            {
+                type: "ExpressionStatement",
+                expression: {
+                    type: "StringLiteral",
+                    value: "hi there",
+                }
+            }
+        ],
     }],
 ];
 
 tests.forEach((t) => {
     test(t[0], t[1]);
 })
+
+console.log("ALL TESTS ARE PASSED!")
