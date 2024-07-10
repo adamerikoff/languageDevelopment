@@ -1,6 +1,7 @@
 const RegExRules = [
     [/^\s+/, null], // Whitespace
     [/^\/\/.*/, null], // Single line comment
+    [/^\/\*[\s\S]*?\*\//, null], // Multi line comment
     [/^[-+]?\d*\.?\d+/, "NUMBER"], // Number
     [/^'[^']*'/, "STRING"], // String
 ];

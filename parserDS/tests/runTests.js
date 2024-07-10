@@ -1,12 +1,39 @@
+import assert from "assert";
+
 import Parser from "../src/Parser.js";
+
 
 const parser = new Parser();
 
-const sourceCode = `
-//     2    
-2314
-`;
+function test(program, expected) {
+    const ast = parser.parse(program);
+    assert.deepEqual(ast, expected);
+}
 
-const ast = parser.parse(sourceCode);
+const tests = [
+    ["42", {
+        type: "Program",
+        body: {
+            type: "NumericLiteral",
+            value: 42,
+        }
+    }],
+    ["52", {
+        type: "Program",
+        body: {
+            type: "NumericLiteral",
+            value: 52,
+        }
+    }],
+    ["'string string'", {
+        type: "Program",
+        body: {
+            type: "StringLiteral",
+            value: "string string",
+        }
+    }],
+];
 
-console.log(JSON.stringify(ast, null, 2));
+tests.forEach((t) => {
+    test(t[0], t[1]);
+})
