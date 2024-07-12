@@ -31,14 +31,26 @@ func (lexer *Lexer) NextToken() token.Token {
 	lexer.skipWhitespace()
 
 	switch lexer.character {
-	case '=':
-		tok = token.NewToken(token.ASSIGN, lexer.character)
 	case ';':
 		tok = token.NewToken(token.SEMICOLON, lexer.character)
 	case ',':
 		tok = token.NewToken(token.COMMA, lexer.character)
+	case '!':
+		tok = token.NewToken(token.EXCLAMATION, lexer.character)
+	case '=':
+		tok = token.NewToken(token.ASSIGN, lexer.character)
+	case '<':
+		tok = token.NewToken(token.LESS_THAN, lexer.character)
+	case '>':
+		tok = token.NewToken(token.GREATER_THAN, lexer.character)
 	case '+':
 		tok = token.NewToken(token.PLUS, lexer.character)
+	case '-':
+		tok = token.NewToken(token.MINUS, lexer.character)
+	case '/':
+		tok = token.NewToken(token.SLASH, lexer.character)
+	case '*':
+		tok = token.NewToken(token.STAR, lexer.character)
 	case '(':
 		tok = token.NewToken(token.LEFT_PARENTHESIS, lexer.character)
 	case ')':
