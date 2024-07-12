@@ -7,9 +7,22 @@ type Token struct {
 	Literal string
 }
 
-func NewToken(tokenType TokenType, character byte) Token {
-	return Token{
-		Type:    tokenType,
-		Literal: string(character),
+func NewToken(tokenType TokenType, value interface{}) Token {
+	switch v := value.(type) {
+	case string:
+		return Token{
+			Type:    tokenType,
+			Literal: v,
+		}
+	case byte:
+		return Token{
+			Type:    tokenType,
+			Literal: string(v),
+		}
+	default:
+		return Token{
+			Type:    tokenType,
+			Literal: "",
+		}
 	}
 }
