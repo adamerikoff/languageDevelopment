@@ -19,6 +19,17 @@ const (
 	CALL        // myFunction(X)
 )
 
+var precedences = map[token.TokenType]int{
+	token.EQUAL:        EQUALS,
+	token.NOT_EQUAL:    EQUALS,
+	token.LESS_THAN:    LESSGREATER,
+	token.GREATER_THAN: LESSGREATER,
+	token.PLUS:         SUM,
+	token.MINUS:        SUM,
+	token.SLASH:        PRODUCT,
+	token.STAR:         PRODUCT,
+}
+
 type (
 	prefixParseFn func() ast.Expression
 	infixParseFn  func(ast.Expression) ast.Expression
@@ -50,6 +61,16 @@ func NewParser(l *lexer.Lexer) *Parser {
 	parser.registerPrefix(token.INTEGER, parser.parseIntegerLiteral)
 	parser.registerPrefix(token.EXCLAMATION, parser.parsePrefixExpression)
 	parser.registerPrefix(token.MINUS, parser.parsePrefixExpression)
+
+	parser.infixParseFns = make(map[token.TokenType]infixParseFn)
+	parser.registerInfix(token.PLUS, parser.parseInfixExpression)
+	parser.registerInfix(token.MINUS, parser.parseInfixExpression)
+	parser.registerInfix(token.SLASH, parser.parseInfixExpression)
+	parser.registerInfix(token.STAR, parser.parseInfixExpression)
+	parser.registerInfix(token.EQUAL, parser.parseInfixExpression)
+	parser.registerInfix(token.NOT_EQUAL, parser.parseInfixExpression)
+	parser.registerInfix(token.LESS_THAN, parser.parseInfixExpression)
+	parser.registerInfix(token.GREATER_THAN, parser.parseInfixExpression)
 
 	parser.nextToken()
 	parser.nextToken()
@@ -134,6 +155,14 @@ func (parser *Parser) parseExpression(precedence int) ast.Expression {
 		return nil
 	}
 	leftExp := prefix()
+	for !parser.peekTokenIs(token.SEMICOLON) && precedence < parser.peekPrecedence() {
+		infix := parser.infixParseFns[parser.peekToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+		parser.nextToken()
+		leftExp = infix(leftExp)
+	}
 	return leftExp
 }
 
@@ -156,6 +185,18 @@ func (parser *Parser) parsePrefixExpression() ast.Expression {
 	}
 	parser.nextToken()
 	expression.Right = parser.parseExpression(PREFIX)
+	return expression
+}
+
+func (parser *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    parser.currentToken,
+		Operator: parser.currentToken.Literal,
+		Left:     left,
+	}
+	precedence := parser.curPrecedence()
+	parser.nextToken()
+	expression.Right = parser.parseExpression(precedence)
 	return expression
 }
 
@@ -185,4 +226,18 @@ func (parser *Parser) expectPeek(t token.TokenType) bool {
 func (parser *Parser) peekError(t token.TokenType) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, parser.peekToken.Type)
 	parser.errors = append(parser.errors, msg)
+}
+
+func (parser *Parser) peekPrecedence() int {
+	if parser, ok := precedences[parser.peekToken.Type]; ok {
+		return parser
+	}
+	return LOWEST
+}
+
+func (parser *Parser) curPrecedence() int {
+	if parser, ok := precedences[parser.currentToken.Type]; ok {
+		return parser
+	}
+	return LOWEST
 }
