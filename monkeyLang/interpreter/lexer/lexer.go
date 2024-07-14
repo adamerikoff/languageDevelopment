@@ -64,6 +64,9 @@ func (lexer *Lexer) NextToken() token.Token {
 		tok = token.NewToken(token.LEFT_BRACE, lexer.character)
 	case '}':
 		tok = token.NewToken(token.RIGHT_BRACE, lexer.character)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = lexer.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.END_OF_LINE
@@ -83,6 +86,17 @@ func (lexer *Lexer) NextToken() token.Token {
 
 	lexer.readCharacter()
 	return tok
+}
+
+func (lexer *Lexer) readString() string {
+	position := lexer.currentCharPosition + 1
+	for {
+		lexer.readCharacter()
+		if lexer.character == '"' || lexer.character == 0 {
+			break
+		}
+	}
+	return lexer.input[position:lexer.currentCharPosition]
 }
 
 func (lexer *Lexer) readCharacter() {

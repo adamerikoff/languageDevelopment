@@ -8,6 +8,7 @@ const (
 	// Identifiers + literals
 	IDENTIFIER = "IDENTIFIER"
 	INTEGER    = "INTEGER"
+	STRING     = "STRING"
 
 	// Operators
 	ASSIGN       = "="
