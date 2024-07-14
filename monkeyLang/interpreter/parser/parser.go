@@ -65,6 +65,7 @@ func NewParser(l *lexer.Lexer) *Parser {
 	parser.registerPrefix(token.FALSE, parser.parseBoolean)
 	parser.registerPrefix(token.LEFT_PARENTHESIS, parser.parseGroupedExpression)
 	parser.registerPrefix(token.IF, parser.parseIfExpression)
+	parser.registerPrefix(token.FUNCTION, parser.parseFunctionLiteral)
 
 	parser.infixParseFns = make(map[token.TokenType]infixParseFn)
 	parser.registerInfix(token.PLUS, parser.parseInfixExpression)
@@ -241,18 +242,54 @@ func (parser *Parser) parseIfExpression() ast.Expression {
 	return expression
 }
 
-func (p *Parser) parseBlockStatement() *ast.BlockStatement {
-	block := &ast.BlockStatement{Token: p.currentToken}
+func (parser *Parser) parseBlockStatement() *ast.BlockStatement {
+	block := &ast.BlockStatement{Token: parser.currentToken}
 	block.Statements = []ast.Statement{}
-	p.nextToken()
-	for !p.currentTokenIs(token.RIGHT_BRACE) && !p.currentTokenIs(token.END_OF_LINE) {
-		stmt := p.parseStatement()
+	parser.nextToken()
+	for !parser.currentTokenIs(token.RIGHT_BRACE) && !parser.currentTokenIs(token.END_OF_LINE) {
+		stmt := parser.parseStatement()
 		if stmt != nil {
 			block.Statements = append(block.Statements, stmt)
 		}
-		p.nextToken()
+		parser.nextToken()
 	}
 	return block
+}
+
+func (parser *Parser) parseFunctionLiteral() ast.Expression {
+	lit := &ast.FunctionLiteral{Token: parser.currentToken}
+	if !parser.expectPeek(token.LEFT_PARENTHESIS) {
+		return nil
+	}
+	lit.Parameters = parser.parseFunctionParameters()
+	if !parser.expectPeek(token.LEFT_BRACE) {
+		return nil
+	}
+	lit.Body = parser.parseBlockStatement()
+	return lit
+}
+
+func (parser *Parser) parseFunctionParameters() []*ast.Identifier {
+	identifiers := []*ast.Identifier{}
+
+	if parser.peekTokenIs(token.RIGHT_PARENTHESIS) {
+		parser.nextToken()
+		return identifiers
+	}
+	parser.nextToken()
+
+	ident := &ast.Identifier{Token: parser.currentToken, Value: parser.currentToken.Literal}
+	identifiers = append(identifiers, ident)
+	for parser.peekTokenIs(token.COMMA) {
+		parser.nextToken()
+		parser.nextToken()
+		ident := &ast.Identifier{Token: parser.currentToken, Value: parser.currentToken.Literal}
+		identifiers = append(identifiers, ident)
+	}
+	if !parser.expectPeek(token.RIGHT_PARENTHESIS) {
+		return nil
+	}
+	return identifiers
 }
 
 func (parser *Parser) noPrefixParseFnError(t token.TokenType) {
