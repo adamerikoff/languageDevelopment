@@ -9,6 +9,9 @@ const (
 	IDENTIFIER = "IDENTIFIER"
 	INTEGER    = "INTEGER"
 	STRING     = "STRING"
+	LBRACKET   = "["
+	RBRACKET   = "]"
+	COLON      = ":"
 
 	// Operators
 	ASSIGN       = "="
