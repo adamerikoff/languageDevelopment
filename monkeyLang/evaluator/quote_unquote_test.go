@@ -1,7 +1,7 @@
 package evaluator
 
 import (
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/object"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/object"
 	"testing"
 )
 
