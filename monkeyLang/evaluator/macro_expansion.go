@@ -1,8 +1,8 @@
 package evaluator
 
 import (
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/ast"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/object"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/ast"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/object"
 )
 
 func DefineMacros(program *ast.Program, env *object.Environment) {

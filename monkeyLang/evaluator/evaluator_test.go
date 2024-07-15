@@ -1,9 +1,9 @@
 package evaluator
 
 import (
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/lexer"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/object"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/parser"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/lexer"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/object"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/parser"
 	"testing"
 )
 

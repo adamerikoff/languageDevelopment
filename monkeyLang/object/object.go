@@ -3,7 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/ast"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/ast"
 	"hash/fnv"
 	"strings"
 )

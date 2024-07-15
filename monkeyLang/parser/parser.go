@@ -2,9 +2,9 @@ package parser
 
 import (
 	"fmt"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/ast"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/lexer"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/token"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/ast"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/lexer"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/token"
 	"strconv"
 )
 

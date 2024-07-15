@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/token"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/token"
 	"testing"
 )
 

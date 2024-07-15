@@ -2,9 +2,9 @@ package evaluator
 
 import (
 	"fmt"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/ast"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/object"
-	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/token"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/ast"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/object"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/token"
 )
 
 func quote(node ast.Node, env *object.Environment) object.Object {
