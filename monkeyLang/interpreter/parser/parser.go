@@ -72,6 +72,7 @@ func NewParser(l *lexer.Lexer) *Parser {
 	parser.registerPrefix(token.STRING, parser.parseStringLiteral)
 	parser.registerPrefix(token.LBRACKET, parser.parseArrayLiteral)
 	parser.registerPrefix(token.LEFT_BRACE, parser.parseHashLiteral)
+	parser.registerPrefix(token.MACRO, parser.parseMacroLiteral)
 
 	parser.infixParseFns = make(map[token.TokenType]infixParseFn)
 	parser.registerInfix(token.PLUS, parser.parseInfixExpression)
@@ -89,6 +90,19 @@ func NewParser(l *lexer.Lexer) *Parser {
 	parser.nextToken()
 
 	return parser
+}
+
+func (parser *Parser) parseMacroLiteral() ast.Expression {
+	lit := &ast.MacroLiteral{Token: parser.currentToken}
+	if !parser.expectPeek(token.LEFT_PARENTHESIS) {
+		return nil
+	}
+	lit.Parameters = parser.parseFunctionParameters()
+	if !parser.expectPeek(token.LEFT_BRACE) {
+		return nil
+	}
+	lit.Body = parser.parseBlockStatement()
+	return lit
 }
 
 func (parser *Parser) parseHashLiteral() ast.Expression {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/evaluator"
 	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/lexer"
+	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/object"
 	"github.com/adamerikoff/lesLanguesDevs/monkeyLang/interpreter/parser"
 	"io"
 )
@@ -25,6 +26,8 @@ const MONKEY_FACE = `            __,__
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
+	macroEnv := object.NewEnvironment()
 	for {
 		fmt.Fprintf(out, PROMPT)
 		scanned := scanner.Scan()
@@ -35,7 +38,11 @@ func Start(in io.Reader, out io.Writer) {
 		l := lexer.NewLexer(line)
 		p := parser.NewParser(l)
 		program := p.ParseProgram()
-		evaluated := evaluator.Eval(program)
+
+		evaluator.DefineMacros(program, macroEnv)
+		expanded := evaluator.ExpandMacros(program, macroEnv)
+
+		evaluated := evaluator.Eval(expanded, env)
 		if evaluated != nil {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")

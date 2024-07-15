@@ -27,7 +27,8 @@ func TestNextToken(t *testing.T) {
 		"foobar";
 		"foo bar";
    		[1, 2];
-		{"foo": "bar"}
+		{"foo": "bar"};
+		macro(x, y) { x + y; };
 	`
 
 	tests := []struct {
@@ -122,6 +123,20 @@ func TestNextToken(t *testing.T) {
 		{token.COLON, ":"},
 		{token.STRING, "bar"},
 		{token.RIGHT_BRACE, "}"},
+		{token.SEMICOLON, ";"},
+		{token.MACRO, "macro"},
+		{token.LEFT_PARENTHESIS, "("},
+		{token.IDENTIFIER, "x"},
+		{token.COMMA, ","},
+		{token.IDENTIFIER, "y"},
+		{token.RIGHT_PARENTHESIS, ")"},
+		{token.LEFT_BRACE, "{"},
+		{token.IDENTIFIER, "x"},
+		{token.PLUS, "+"},
+		{token.IDENTIFIER, "y"},
+		{token.SEMICOLON, ";"},
+		{token.RIGHT_BRACE, "}"},
+		{token.SEMICOLON, ";"},
 		{token.END_OF_LINE, ""},
 	}
 
