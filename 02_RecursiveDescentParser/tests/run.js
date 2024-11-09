@@ -1,9 +1,14 @@
 const { Parser } = require("../src/Parser");
+const assert = require("assert");
+const tests = [require("./literal_test")];
 
 const parser = new Parser();
 
-const program = `"asdads"`;
+function test(program, expected_result) {
+    const ast = parser.parse(program);
+    assert.deepEqual(ast, expected_result);
+}
 
-const ast = parser.parse(program);
+tests.forEach(testRun => testRun(test));
 
-console.log(JSON.stringify(ast, null, 2));
+console.log("All assertions are passed!");

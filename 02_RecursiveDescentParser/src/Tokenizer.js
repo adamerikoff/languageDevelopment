@@ -26,6 +26,9 @@ class Tokenizer {
             if (tokenValue == null) {
                 continue;
             }
+            if (tokenType == null) {
+                return this.getNextToken();
+            }
             return {
                 type: tokenType,
                 value: tokenValue,

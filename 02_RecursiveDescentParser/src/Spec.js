@@ -1,5 +1,8 @@
 const Spec = [
-    [/^\d/, "NUMBER"],
+    [/^\s+/, null],
+    [/^\/\/.*/, null],
+    [/^\/\*[\s\S]*?\*\//, null],
+    [/^\d+/, "NUMBER"],
     [/^"[^"]*"/, "STRING"],
 ];
 
