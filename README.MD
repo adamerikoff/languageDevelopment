@@ -6,7 +6,8 @@ Welcome to my repository showcasing various language development projects. Each 
 | Project Folder                    | Description                                                                 |
 |------------------------------------|-----------------------------------------------------------------------------|
 | [CustomLanguageTranspiler](01_CustomLanguageTranspiler) | A custom language transpiler to JS written in Ruby. |
-| [RecursiveDescentParser](02_RecursiveDescentParser)   | A recursive descent parser in JavaScript for a simple language, with tests for various features. |
+| [RecursiveDescentParser](02_RecursiveDescentParser)     | A recursive descent parser in JavaScript for a simple language, with tests for various features. |
+| [MonkeyLang](03_MonkeyLang)     |  |
 
 ## Resources
 
