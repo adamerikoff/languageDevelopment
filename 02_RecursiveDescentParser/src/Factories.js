@@ -5,34 +5,29 @@ const DefaultFactory = {
             body,
         };
     },
-
     EmptyStatement() {
         return {
             type: "EmptyStatement"
         };
     },
-
     BlockStatement(body) {
         return {
             type: "BlockStatement",
             body,
         };
     },
-
     ExpressionStatement(expression) {
         return {
             type: "ExpressionStatement",
             expression,
         };
     },
-
     VariableStatement(declarations) {
         return {
             type: "VariableStatement",
             declarations
         };
     },
-
     VariableDeclaration(id, init) {
         return {
             type: "VariableDeclaration",
@@ -40,7 +35,6 @@ const DefaultFactory = {
             init
         };
     },
-
     AssignmentExpression(operator, left, right) {
         return {
             type: "AssignmentExpression",
@@ -49,14 +43,35 @@ const DefaultFactory = {
             right
         };
     },
-
+    IfStatement(test, consequent, alternate) {
+        return {
+            type: "IfStatement",
+            test,
+            consequent,
+            alternate
+        };
+    },
+    LogicalExpression(operator, left, right) {
+        return {
+            type: "LogicalExpression",
+            operator,
+            left,
+            right
+        };
+    },
+    UnaryExpression(operator, argument) {
+        return {
+            type: "UnaryExpression",
+            operator,
+            argument
+        };
+    },
     Identifier(name) {
         return {
             type: "Identifier",
             name,
         };
     },
-
     BinaryExpression(operator, left, right) {
         return {
             type: "BinaryExpression",
@@ -65,28 +80,28 @@ const DefaultFactory = {
             right
         };
     },
-
     StringLiteral(value) {
         return {
             type: "StringLiteral",
             value,
         };
     },
-
     NumericLiteral(value) {
         return {
             type: "NumericLiteral",
             value,
         };
     },
-
-    // New method for IfStatement
-    IfStatement(test, consequent, alternate) {
+    BooleanLiteral(value) {
         return {
-            type: "IfStatement",
-            test,
-            consequent,
-            alternate
+            type: "BooleanLiteral",
+            value
+        };
+    },
+    NullLiteral() {
+        return {
+            type: "NullLiteral",
+            value: null
         };
     }
 };
@@ -95,51 +110,50 @@ const SExpressionFactory = {
     Program(body) {
         return ["begin", body];
     },
-
     EmptyStatement() {
         return ["empty"];
     },
-
     BlockStatement(body) {
         return ["begin", body];
     },
-
     ExpressionStatement(expression) {
         return expression;
     },
-
     VariableStatement(declarations) {
         return ["var", declarations];
     },
-
     VariableDeclaration(id, init) {
         return init ? ["assign", id, init] : ["var", id];
     },
-
     AssignmentExpression(operator, left, right) {
         return [operator, left, right];
     },
-
+    IfStatement(test, consequent, alternate) {
+        return ["if", test, consequent, alternate || null];
+    },
+    LogicalExpression(operator, left, right) {
+        return [operator, left, right];
+    },
+    UnaryExpression(operator, argument) {
+        return [operator, argument];
+    },
     Identifier(name) {
         return name;
     },
-
     BinaryExpression(operator, left, right) {
         return [operator, left, right];
     },
-
     StringLiteral(value) {
         return `"${value}"`;
     },
-
     NumericLiteral(value) {
         return value;
     },
-
-    // New method for IfStatement
-    IfStatement(test, consequent, alternate) {
-        const ifExpression = ["if", test, consequent];
-        return alternate ? [...ifExpression, alternate] : ifExpression;
+    BooleanLiteral(value) {
+        return value ? "true" : "false";
+    },
+    NullLiteral() {
+        return "null";
     }
 };
 

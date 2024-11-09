@@ -1,6 +1,7 @@
 const { Tokenizer } = require("./Tokenizer");
 const { DefaultFactory, SExpressionFactory } = require("./Factories");
 
+// Choose the AST mode
 const AST_MODE = "default";
 const factory = AST_MODE === "default" ? DefaultFactory : SExpressionFactory;
 
@@ -10,6 +11,7 @@ class Parser {
         this._tokenizer = new Tokenizer();
     }
 
+    // Main entry point for parsing a string
     parse(string) {
         this._string = string;
         this._tokenizer.init(string);
@@ -17,10 +19,12 @@ class Parser {
         return this.Program();
     }
 
+    // Parse a program, which consists of statements
     Program() {
         return factory.Program(this.StatementList());
     }
 
+    // Parse a list of statements (terminated by a stopLookahead)
     StatementList(stopLookahead = null) {
         const statementList = [this.Statement()];
         while (this._lookahead != null && this._lookahead.type !== stopLookahead) {
@@ -29,21 +33,29 @@ class Parser {
         return statementList;
     }
 
+    // Determine the type of statement based on the lookahead token
     Statement() {
         switch (this._lookahead.type) {
-            case ";": 
+            case ";":
                 return this.EmptyStatement();
-            case "if": 
+            case "if":
                 return this.IfStatement();
-            case "{": 
+            case "{":
                 return this.BlockStatement();
-            case "let": 
+            case "let":
                 return this.VariableStatement();
             default:
                 return this.ExpressionStatement();
         }
     }
 
+    // Parse an empty statement (just a semicolon)
+    EmptyStatement() {
+        this._eat(";");
+        return factory.EmptyStatement();
+    }
+
+    // Parse an 'if' statement with optional 'else' part
     IfStatement() {
         this._eat("if");
         this._eat("(");
@@ -52,13 +64,22 @@ class Parser {
         const consequent = this.Statement();
         let alternate = null;
         if (this._lookahead != null && this._lookahead.type === "else") {
-            this._eat("else"); // Consume "else"
+            this._eat("else");
             alternate = this.Statement();
         }
-    
+
         return factory.IfStatement(test, consequent, alternate);
     }
 
+    // Parse a block statement
+    BlockStatement() {
+        this._eat("{");
+        const body = this._lookahead.type !== "}" ? this.StatementList("}") : [];
+        this._eat("}");
+        return factory.BlockStatement(body);
+    }
+
+    // Parse a variable declaration statement
     VariableStatement() {
         this._eat("let");
         const declarations = this.VariableDeclarationList();
@@ -66,6 +87,7 @@ class Parser {
         return factory.VariableStatement(declarations);
     }
 
+    // Parse a list of variable declarations (separated by commas)
     VariableDeclarationList() {
         const declarations = [];
         do {
@@ -74,6 +96,7 @@ class Parser {
         return declarations;
     }
 
+    // Parse a single variable declaration
     VariableDeclaration() {
         const id = this.Identifier();
         const init = this._lookahead && this._lookahead.type === "SIMPLE_ASSIGN" 
@@ -82,33 +105,25 @@ class Parser {
         return factory.VariableDeclaration(id, init);
     }
 
+    // Parse the initializer for a variable
     VariableInitializer() {
         this._eat("SIMPLE_ASSIGN");
         return this.AssignmentExpression();
     }
 
-    EmptyStatement() {
-        this._eat(";");
-        return factory.EmptyStatement();
-    }
-
-    BlockStatement() {
-        this._eat("{");
-        const body = this._lookahead.type !== "}" ? this.StatementList("}") : [];
-        this._eat("}");
-        return factory.BlockStatement(body);
-    }
-
+    // Parse an expression statement (e.g., an expression followed by a semicolon)
     ExpressionStatement() {
         const expression = this.Expression();
         this._eat(";");
         return factory.ExpressionStatement(expression);
     }
 
+    // Expression parsing entry point (handles assignment expressions)
     Expression() {
         return this.AssignmentExpression();
     }
 
+    // Parse an assignment expression (handles assignment operators)
     AssignmentExpression() {
         const left = this.LogicalORExpression();
         if (!this._isAssignmentOperator(this._lookahead.type)) {
@@ -119,64 +134,38 @@ class Parser {
         return factory.AssignmentExpression(operator, this._checkValidAssignmentTarget(left), right);
     }
 
-    LeftHandSideExpression() {
-        return this.Identifier();
-    }
-
-    Identifier() {
-        const name = this._eat("IDENTIFIER").value;
-        return factory.Identifier(name);
-    }
-
-    _checkValidAssignmentTarget(node) {
-        if (node.type === "Identifier") {
-            return node;
-        }
-        throw new SyntaxError(`Invalid left-hand side in assignment expression!`);
-    }
-
-    _isAssignmentOperator(tokenType) {
-        return tokenType === "SIMPLE_ASSIGN" || tokenType === "COMPLEX_ASSIGN";
-    }
-
-    AssignmentOperator() {
-        if (this._lookahead.type === "SIMPLE_ASSIGN") {
-            return this._eat("SIMPLE_ASSIGN");
-        }
-        return this._eat("COMPLEX_ASSIGN");
-    }
-
+    // Parse logical OR expressions (handles "||" operator)
     LogicalORExpression() {
         return this._LogicalExpression("LogicalANDExpression", "LOGICAL_OR");
     }
 
+    // Parse logical AND expressions (handles "&&" operator)
     LogicalANDExpression() {
         return this._LogicalExpression("EqualityExpression", "LOGICAL_AND");
     }
-    
+
+    // Helper for parsing logical expressions (AND/OR)
     _LogicalExpression(builderName, operatorToken) {
         let left = this[builderName]();
         while (this._lookahead.type === operatorToken) {
             const operator = this._eat(operatorToken).value;
             const right = this[builderName]();
-            left = {
-                type: "LogicalExpression",
-                operator,
-                left,
-                right,
-            };
+            left = factory.LogicalExpression(operator, left, right);
         }
         return left;
     }
 
+    // Parse binary expressions for addition and subtraction
     AdditiveExpression() {
         return this._BinaryExpression("MultiplicativeExpression", "ADDITIVE_OPERATOR");
     }
 
+    // Parse binary expressions for multiplication and division
     MultiplicativeExpression() {
-        return this._BinaryExpression("PrimaryExpression", "MULTIPLICATIVE_OPERATOR");
+        return this._BinaryExpression("UnaryExpression", "MULTIPLICATIVE_OPERATOR");
     }
 
+    // Helper for parsing binary expressions (e.g., arithmetic operations)
     _BinaryExpression(builderName, operatorToken) {
         let left = this[builderName]();
         while (this._lookahead != null && this._lookahead.type === operatorToken) {
@@ -187,14 +176,35 @@ class Parser {
         return left;
     }
 
+    // Parse equality expressions (handles "==" and "!=")
     EqualityExpression() {
         return this._BinaryExpression("RelationalExpression", "EQUALITY_OPERATOR");
     }
 
+    // Parse relational expressions (handles "<", ">", "<=", ">=")
     RelationalExpression() {
         return this._BinaryExpression("AdditiveExpression", "RELATIONAL_OPERATOR");
     }
 
+    // Parse unary expressions (e.g., negation or logical NOT)
+    UnaryExpression() {
+        let operator;
+        switch (this._lookahead.type) {
+            case "ADDITIVE_OPERATOR":
+                operator = this._eat("ADDITIVE_OPERATOR").value;
+                break;
+            case "LOGICAL_NOT":
+                operator = this._eat("LOGICAL_NOT").value;
+                break;
+        }
+        if (operator != null) {
+            const argument = this.UnaryExpression();
+            return factory.UnaryExpression(operator, argument);
+        }
+        return this.PrimaryExpression();  // Replaced LeftHandSideExpression with PrimaryExpression
+    }
+
+    // Parse a primary expression (either literals or identifiers)
     PrimaryExpression() {
         if (this._isLiteral(this._lookahead.type)) {
             return this.Literal();
@@ -202,15 +212,19 @@ class Parser {
         switch (this._lookahead.type) {
             case "(":
                 return this.ParenthesizedExpression();
+            case "IDENTIFIER":
+                return this.Identifier();
             default:
-                return this.LeftHandSideExpression();
+                return this.PrimaryExpression(); // Replaced LeftHandSideExpression with PrimaryExpression
         }
     }
 
+    // Check if a token is a literal (number, string, boolean, null)
     _isLiteral(tokenType) {
         return tokenType === "NUMBER" || tokenType === "STRING" || tokenType === "true" || tokenType === "false" || tokenType === "null";
     }
 
+    // Parse a parenthesized expression (e.g., (expression))
     ParenthesizedExpression() {
         this._eat("(");
         const expression = this.Expression();
@@ -218,6 +232,13 @@ class Parser {
         return expression;
     }
 
+    // Parse an identifier (variable or function name)
+    Identifier() {
+        const name = this._eat("IDENTIFIER").value;
+        return factory.Identifier(name);
+    }
+
+    // Parse literals (numbers, strings, booleans, null)
     Literal() {
         switch (this._lookahead.type) {
             case "NUMBER":
@@ -234,32 +255,31 @@ class Parser {
         throw new SyntaxError(`Unexpected literal "${this._lookahead.type}"!`);
     }
 
-    StringLiteral() {
-        const token = this._eat("STRING");
-        return factory.StringLiteral(token.value.slice(1, -1));
-    }
-
+    // Parse a numeric literal
     NumericLiteral() {
         const token = this._eat("NUMBER");
         return factory.NumericLiteral(Number(token.value));
     }
 
-    BooleanLiteral(value) {
-       this._eat(value ? "true" : "false");
-       return {
-        type: "BooleanLiteral",
-        value,
-       };
+    // Parse a string literal
+    StringLiteral() {
+        const token = this._eat("STRING");
+        return factory.StringLiteral(token.value.slice(1, -1));  // Remove quotes
     }
 
+    // Parse a boolean literal (true or false)
+    BooleanLiteral(value) {
+        this._eat(value ? "true" : "false");
+        return factory.BooleanLiteral(value);
+    }
+
+    // Parse a null literal
     NullLiteral() {
         this._eat("null");
-       return {
-        type: "NullLiteral",
-        value: null,
-       };
+        return factory.NullLiteral();
     }
 
+    // Helper method to "eat" (consume) a token and move to the next one
     _eat(tokenType) {
         const token = this._lookahead;
         if (token == null) {
@@ -270,6 +290,27 @@ class Parser {
         }
         this._lookahead = this._tokenizer.getNextToken();
         return token;
+    }
+
+    // Check if a token type is an assignment operator
+    _isAssignmentOperator(tokenType) {
+        return tokenType === "SIMPLE_ASSIGN" || tokenType === "COMPLEX_ASSIGN";
+    }
+
+    // Handle assignment operators (simple or complex)
+    AssignmentOperator() {
+        if (this._lookahead.type === "SIMPLE_ASSIGN") {
+            return this._eat("SIMPLE_ASSIGN");
+        }
+        return this._eat("COMPLEX_ASSIGN");
+    }
+
+    // Validate if the assignment target is valid (e.g., an identifier)
+    _checkValidAssignmentTarget(node) {
+        if (node.type === "Identifier") {
+            return node;
+        }
+        throw new SyntaxError(`Invalid left-hand side in assignment expression!`);
     }
 }
 

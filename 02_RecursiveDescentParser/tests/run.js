@@ -13,6 +13,7 @@ const tests = [
     require("./equality_test"),
     require("./logical_test"),
     require("./unary_test"),
+    //require("./while_test"),
 ];
 
 const parser = new Parser();
@@ -29,6 +30,7 @@ console.log("All assertions are passed!");
 function manual_test() {
     const program = `
         x = 42;
+        y = -+x;
     `;
 
     const ast = parser.parse(program);
