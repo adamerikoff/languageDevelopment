@@ -1,6 +1,11 @@
 const { Parser } = require("../src/Parser");
 const assert = require("assert");
-const tests = [require("./literal_test")];
+const tests = [
+    require("./literal_test"),
+    require("./statement_list_test"),
+    require("./block_test"),
+    require("./empty_test"),
+];
 
 const parser = new Parser();
 
@@ -12,3 +17,14 @@ function test(program, expected_result) {
 tests.forEach(testRun => testRun(test));
 
 console.log("All assertions are passed!");
+
+function manual_test() {
+    const program = `
+    // comment
+    "hello";
+    42;`;
+
+    const ast = parser.parse(program);
+    console.log(JSON.stringify(ast, null, 2));
+}
+manual_test();

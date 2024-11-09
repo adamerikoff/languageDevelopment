@@ -1,22 +1,9 @@
 module.exports = test => {
     test(
-        `42;`,
-        {
-            type: "Program",
-            body: [
-                {
-                    type: "ExpressionStatement",
-                    expression: {
-                        type: "NumericLiteral",
-                        value: 42,
-                    }
-                }
-            ]
-        },
-    );
-
-    test(
-        `"hello";`,
+        `
+            "hello";
+            42;
+        `,
         {
             type: "Program",
             body: [
@@ -25,6 +12,13 @@ module.exports = test => {
                     expression: {
                         type: "StringLiteral",
                         value: "hello",
+                    }
+                },
+                {
+                    type: "ExpressionStatement",
+                    expression: {
+                        type: "NumericLiteral",
+                        value: 42,
                     }
                 }
             ]
