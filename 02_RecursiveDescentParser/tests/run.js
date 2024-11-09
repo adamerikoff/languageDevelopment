@@ -18,6 +18,8 @@ const tests = [
     require("./for_test"),
     require("./function_test"),
     require("./member_test"),
+    require("./function_test"),
+    require("./call_test"),
 ];
 
 const parser = new Parser();

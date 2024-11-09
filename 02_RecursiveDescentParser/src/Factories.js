@@ -148,7 +148,14 @@ const DefaultFactory = {
             object,
             property,
         };
-    }
+    },
+    CallExpression(callee, arguments) {
+        return {
+            type: "CallExpression",
+            callee,
+            arguments
+        }
+    },
 };
 
 const SExpressionFactory = {
