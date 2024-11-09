@@ -10,6 +10,6 @@ Welcome to my repository showcasing various language development projects. Each 
 
 ## Resources
 
-[Destroy All Software](https://www.destroyallsoftware.com).
-[Dmitry Soshnikov](http://dmitrysoshnikov.com/).
+- [Destroy All Software](https://www.destroyallsoftware.com).
+- [Dmitry Soshnikov](http://dmitrysoshnikov.com/).
 
