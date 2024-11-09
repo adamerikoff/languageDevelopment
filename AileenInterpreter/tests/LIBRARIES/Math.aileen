@@ -1,9 +1,0 @@
-(FUNCTION abs (value)
-  (CONDITION (< value 0)
-      (- value)
-      value))
-
-(FUNCTION square (x)
-  (* x x))
-
-(ASSIGN MAX_VALUE 1000)
