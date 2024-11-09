@@ -20,6 +20,7 @@ const tests = [
     require("./member_test"),
     require("./function_test"),
     require("./call_test"),
+    require("./class_test"),
 ];
 
 const parser = new Parser();

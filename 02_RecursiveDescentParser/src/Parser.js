@@ -46,6 +46,8 @@ class Parser {
                 return this.VariableStatement();
             case "def":
                 return this.FunctionDeclaration();
+            case "class":
+                return this.ClassDeclaration();
             case "return":
                 return this.ReturnStatement();
             case "while":
@@ -55,6 +57,19 @@ class Parser {
             default:
                 return this.ExpressionStatement();
         }
+    }
+
+    ClassDeclaration() {
+        this._eat("class");
+        const id = this.Identifier();
+        const superClass = this._lookahead.type === "extends" ? this.ClassExtends() : null;
+        const body = this.BlockStatement();
+        return factory.ClassDeclaration(id, superClass, body);
+    }
+
+    ClassExtends() {
+        this._eat("extends");
+        return this.Identifier();
     }
 
     FunctionDeclaration() {
@@ -298,6 +313,9 @@ class Parser {
     }
 
     CallMemberExpression() {
+        if (this._lookahead.type === "super") {
+            return this._CallExpression(this.Super());
+        }
         const member = this.MemberExpression();
         if (this._lookahead.type === "(") {
             return this._CallExpression(member);
@@ -356,11 +374,29 @@ class Parser {
                 return this.ParenthesizedExpression();
             case "IDENTIFIER":
                 return this.Identifier();
+            case "this":
+                return this.ThisExpression();
+            case "new":
+                return this.NewExpression();
             default:
                 return this.LeftHandSideExpression();
         }
     }
 
+    NewExpression() {
+        this._eat("new");
+        return factory.NewExpression(this.MemberExpression(), this.Arguments());
+    }
+
+    ThisExpression() {
+        this._eat("this");
+        return factory.ThisExpression();
+    }
+
+    Super() {
+        this._eat("super");
+        return factory.Super();
+    }
     // Check if a token is a literal (number, string, boolean, null)
     _isLiteral(tokenType) {
         return tokenType === "NUMBER" || tokenType === "STRING" || tokenType === "true" || tokenType === "false" || tokenType === "null";

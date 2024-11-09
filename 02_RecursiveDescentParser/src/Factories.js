@@ -153,8 +153,33 @@ const DefaultFactory = {
         return {
             type: "CallExpression",
             callee,
+            arguments,
+        };
+    },
+    ClassDeclaration(id, superClass, body) {
+        return {
+            type: "ClassDeclaration",
+            id,
+            superClass,
+            body,
+        };
+    },
+    ThisExpression() {
+        return {
+            type: "ThisExpression",
+        };
+    },
+    Super() {
+        return {
+            type: "Super",
+        };
+    },
+    NewExpression(callee, arguments) {
+        return {
+            type: "NewExpression",
+            callee,
             arguments
-        }
+        };
     },
 };
 
