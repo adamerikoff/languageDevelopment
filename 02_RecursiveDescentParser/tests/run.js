@@ -10,6 +10,9 @@ const tests = [
     require("./variable_test"),
     require("./control_test"),
     require("./relational_test"),
+    require("./equality_test"),
+    require("./logical_test"),
+    require("./unary_test"),
 ];
 
 const parser = new Parser();
