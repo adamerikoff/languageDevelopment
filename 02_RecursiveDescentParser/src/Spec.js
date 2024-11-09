@@ -24,6 +24,8 @@ const Spec = [
     [/^\bwhile\b/, "while"],       // while 
     [/^\bdo\b/, "do"],             // do
     [/^\bfor\b/, "for"],           // for
+    [/^\bdef\b/, "def"],           // for
+    [/^\breturn\b/, "return"],           // for
 
     // Literals
     [/^\d+/, "NUMBER"],            // Numeric literal

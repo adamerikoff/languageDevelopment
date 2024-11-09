@@ -126,7 +126,21 @@ const DefaultFactory = {
             update,
             body
         };
-    },    
+    },
+    FunctionDeclaration(name, params, body) {
+        return {
+            type: "FunctionDeclaration",
+            name,
+            params,
+            body,
+        };
+    },
+    ReturnStatement(argument) {
+        return {
+            type: "ReturnStatement",
+            argument
+        }
+    },
 };
 
 const SExpressionFactory = {
