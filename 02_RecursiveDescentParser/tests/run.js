@@ -6,6 +6,7 @@ const tests = [
     require("./block_test"),
     require("./empty_test"),
     require("./math_test"),
+    require("./assignment_test"),
 ];
 
 const parser = new Parser();
@@ -21,9 +22,8 @@ console.log("All assertions are passed!");
 
 function manual_test() {
     const program = `
-    // comment
-    "hello";
-    42;`;
+        x = 42;
+    `;
 
     const ast = parser.parse(program);
     console.log(JSON.stringify(ast, null, 2));
