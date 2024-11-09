@@ -290,7 +290,29 @@ class Parser {
             const argument = this.UnaryExpression();
             return factory.UnaryExpression(operator, argument);
         }
-        return this.PrimaryExpression();  // Replaced LeftHandSideExpression with PrimaryExpression
+        return this.LeftHandSideExpression();
+    }
+
+    LeftHandSideExpression() {
+        return this.MemberExpression();
+    }
+
+    MemberExpression() {
+        let object = this.PrimaryExpression();
+        while (this._lookahead.type === "." || this._lookahead.type === "[") {
+            if (this._lookahead.type === ".") {
+                this._eat(".");
+                const property = this.Identifier();
+                object = factory.MemberExpression(false, object, property);
+            }
+            if (this._lookahead.type === "[") {
+                this._eat("[");
+                const property = this.Expression();
+                this._eat("]");
+                object = factory.MemberExpression(true, object, property);
+            }
+        }
+        return object
     }
 
     // Parse a primary expression (either literals or identifiers)
@@ -304,7 +326,7 @@ class Parser {
             case "IDENTIFIER":
                 return this.Identifier();
             default:
-                return this.PrimaryExpression(); // Replaced LeftHandSideExpression with PrimaryExpression
+                return this.LeftHandSideExpression();
         }
     }
 
@@ -396,7 +418,7 @@ class Parser {
 
     // Validate if the assignment target is valid (e.g., an identifier)
     _checkValidAssignmentTarget(node) {
-        if (node.type === "Identifier") {
+        if (node.type === "Identifier" || node.type === "MemberExpression") {
             return node;
         }
         throw new SyntaxError(`Invalid left-hand side in assignment expression!`);

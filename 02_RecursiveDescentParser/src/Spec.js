@@ -13,6 +13,9 @@ const Spec = [
     [/^\(/, "("],                  // Opening parenthesis
     [/^\)/, ")"],                  // Closing parenthesis
     [/^,/, ","],                   // Comma
+    [/^\./, "."],                   // Comma
+    [/^\[/, "["],                   // Comma
+    [/^\]/, "]"],                   // Comma
 
     // Keywords
     [/^\blet\b/, "let"],           // `let` keyword for variable declaration

@@ -141,6 +141,14 @@ const DefaultFactory = {
             argument
         }
     },
+    MemberExpression(computed, object, property) {
+        return {
+            type: "MemberExpression",
+            computed,
+            object,
+            property,
+        };
+    }
 };
 
 const SExpressionFactory = {
