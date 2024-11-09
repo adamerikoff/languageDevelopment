@@ -103,7 +103,30 @@ const DefaultFactory = {
             type: "NullLiteral",
             value: null
         };
-    }
+    },
+    WhileStatement(test, body) {
+        return {
+            type: "WhileStatement",
+            test,
+            body,
+        };
+    },
+    DoWhileStatement(test, body) {
+        return {
+            type: "DoWhileStatement",
+            test,
+            body
+        };
+    },
+    ForStatement(init, test, update, body) {
+        return {
+            type: "ForStatement",
+            init,
+            test,
+            update,
+            body
+        };
+    },    
 };
 
 const SExpressionFactory = {
@@ -154,7 +177,16 @@ const SExpressionFactory = {
     },
     NullLiteral() {
         return "null";
-    }
+    },
+    WhileStatement(test, body) {
+        return ["while", test, body];
+    },
+    DoWhileStatement(test, body) {
+        return ["do", body, "while", test];
+    },
+    ForStatement(init, test, update, body) {
+        return ["for", init, test, update, body];
+    },
 };
 
 module.exports = { DefaultFactory, SExpressionFactory };

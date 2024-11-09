@@ -44,9 +44,64 @@ class Parser {
                 return this.BlockStatement();
             case "let":
                 return this.VariableStatement();
+            case "while":
+            case "do":
+            case "for":
+                return this.IterationStatement();
             default:
                 return this.ExpressionStatement();
         }
+    }
+
+    IterationStatement() {
+        switch (this._lookahead.type) {
+            case "while":
+                return this.WhileStatement();
+            case "do":
+                return this.DoWhileStatement();
+            case "for":
+                return this.ForStatement();
+        }
+    }
+
+    WhileStatement() {
+        this._eat("while");
+        this._eat("(");
+        const test = this.Expression();
+        this._eat(")");
+        const body = this.Statement();
+        return factory.WhileStatement(test, body);
+    }
+
+    DoWhileStatement() {
+        this._eat("do");
+        const body = this.Statement();
+        this._eat("while");
+        this._eat("(");
+        const test = this.Expression();
+        this._eat(")");
+        this._eat(";");
+        return factory.DoWhileStatement(test, body);
+    }
+
+    ForStatement() {
+        this._eat("for");
+        this._eat("(");
+        const init = this._lookahead.type !== ";" ? this.ForStatementInit() : null;
+        this._eat(";");
+        const test = this._lookahead.type !== ";" ? this.Expression() : null;
+        this._eat(";");
+        const update = this._lookahead.type !== ")" ? this.Expression() : null;
+        this._eat(")");
+        const body = this.Statement();
+        return factory.ForStatement(init, test, update, body);
+    }
+
+    ForStatementInit() {
+        if (this._lookahead.type == "let") {
+            return this.VariableStatementInit();
+        }
+        return this.Expression();
     }
 
     // Parse an empty statement (just a semicolon)
@@ -80,11 +135,16 @@ class Parser {
     }
 
     // Parse a variable declaration statement
-    VariableStatement() {
+    VariableStatementInit() {
         this._eat("let");
         const declarations = this.VariableDeclarationList();
-        this._eat(";");
         return factory.VariableStatement(declarations);
+    }
+
+    VariableStatement() {
+        const variableStatement = this.VariableStatementInit();
+        this._eat(";");
+        return variableStatement;
     }
 
     // Parse a list of variable declarations (separated by commas)

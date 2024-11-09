@@ -21,6 +21,9 @@ const Spec = [
     [/^\bfalse\b/, "false"],       // Boolean `false`
     [/^\btrue\b/, "true"],         // Boolean `true`
     [/^\bnull\b/, "null"],         // Null value
+    [/^\bwhile\b/, "while"],       // while 
+    [/^\bdo\b/, "do"],             // do
+    [/^\bfor\b/, "for"],           // for
 
     // Literals
     [/^\d+/, "NUMBER"],            // Numeric literal

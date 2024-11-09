@@ -13,7 +13,9 @@ const tests = [
     require("./equality_test"),
     require("./logical_test"),
     require("./unary_test"),
-    //require("./while_test"),
+    require("./while_test"),
+    require("./do_while_test"),
+    require("./for_test"),
 ];
 
 const parser = new Parser();
