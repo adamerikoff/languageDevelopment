@@ -7,6 +7,9 @@ const tests = [
     require("./empty_test"),
     require("./math_test"),
     require("./assignment_test"),
+    require("./variable_test"),
+    require("./control_test"),
+    require("./relational_test"),
 ];
 
 const parser = new Parser();
