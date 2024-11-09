@@ -1,6 +1,6 @@
 # Language Development Projects
 
-Welcome to my repository showcasing various language development projects. Each folder contains a separate project.
+This repository presents a collection of language development projects that explore both the theoretical foundations and practical applications of language design, parsing, and transpilation. Each project delves into various aspects of language theory, ranging from compiler construction to the development of interpreters and transpilers. These works reflect an interest in both the scientific principles and the applied techniques used in building custom programming languages and tools for language processing. The development of these projects has been guided by a variety of resources, including books, videos, and other educational materials, all of which are mentioned within the respective project documentation.
 
 ## Projects Overview
 | Project Folder                     | Description                                                                 |
