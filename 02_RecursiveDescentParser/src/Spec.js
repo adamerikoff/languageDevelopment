@@ -5,6 +5,10 @@ const Spec = [
     [/^;/, ";"],
     [/^\{/, "{"],
     [/^\}/, "}"],
+    [/^\(/, "("],
+    [/^\)/, ")"],
+    [/^[+\-]/, "ADDITIVE_OPERATOR"],
+    [/^[*\/]/, "MULTIPLICATIVE_OPERATOR"],
     [/^\d+/, "NUMBER"],
     [/^"[^"]*"/, "STRING"],
 ];
