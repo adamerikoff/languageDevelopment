@@ -1,14 +1,22 @@
+const { Environment } = require("./Environment");
+
 class Eva {
-    eval(exp) {
+    constructor(global = new Environment()) {
+        this.global = global;
+    }
+
+    eval(exp, env = this.global) {
         switch (true) {
             case this.isNumber(exp):
                 return exp;
             case this.isString(exp):
                 return this.parseString(exp);
             case this.isExpression(exp):
-                return this.parseExpression(exp);
+                return this.parseExpression(exp, env);
+            case this.isVariable(exp):
+                return this.parseVariable(exp, env);
             default:
-                throw new Error(`Unsupported expression type: ${typeof exp}`);
+                throw new Error(`Unsupported expression type: ${JSON.stringify(exp)}`);
         }
     }
 
@@ -24,16 +32,26 @@ class Eva {
         return Array.isArray(exp) && ["+", "-", "*", "/"].includes(exp[0]);
     }
 
+    isVariable(exp) {
+        return exp[0] === "declare";
+    }
+
     parseString(exp) {
         return exp.slice(1, -1); // Remove surrounding quotes
     }
 
-    parseExpression(exp) {
+    parseVariable(exp, env) {
+        const [_, name, value] = exp;
+        const evaluatedValue = this.eval(value, env);
+        return env.define(name, evaluatedValue);
+    }
+
+    parseExpression(exp, env) {
         const [operator, left, right] = exp;
 
         // Recursively evaluate left and right operands to handle nested expressions
-        const leftValue = this.eval(left);
-        const rightValue = this.eval(right);
+        const leftValue = this.eval(left, env);
+        const rightValue = this.eval(right, env);
 
         // Ensure operands are numbers after evaluation
         if (!this.isNumber(leftValue) || !this.isNumber(rightValue)) {
