@@ -31,20 +31,25 @@ class Eva {
     parseExpression(exp) {
         const [operator, left, right] = exp;
 
-        if (!this.isNumber(left) || !this.isNumber(right)) {
-            throw new Error(`Invalid operands for ${operator}: ${left}, ${right}`);
+        // Recursively evaluate left and right operands to handle nested expressions
+        const leftValue = this.eval(left);
+        const rightValue = this.eval(right);
+
+        // Ensure operands are numbers after evaluation
+        if (!this.isNumber(leftValue) || !this.isNumber(rightValue)) {
+            throw new Error(`Invalid operands for ${operator}: ${leftValue}, ${rightValue}`);
         }
 
         switch (operator) {
             case "+":
-                return left + right;
+                return leftValue + rightValue;
             case "-":
-                return left - right;
+                return leftValue - rightValue;
             case "*":
-                return left * right;
+                return leftValue * rightValue;
             case "/":
-                if (right === 0) throw new Error("Division by zero error");
-                return left / right;
+                if (rightValue === 0) throw new Error("Division by zero error");
+                return leftValue / rightValue;
             default:
                 throw new Error(`Unsupported operator: ${operator}`);
         }
