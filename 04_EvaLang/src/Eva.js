@@ -13,6 +13,8 @@ class Eva {
                 return this.parseBinaryExpression(exp, env);
             case this.isVariableDeclaration(exp):
                 return this.parseVariableDeclaration(exp, env);
+            case this.isVariableRedeclaration(exp):
+                return this.parseVariableRedeclaration(exp, env);
             case this.isVariable(exp):
                 return env.lookup(exp);
             case this.isBlock(exp):
@@ -45,7 +47,11 @@ class Eva {
     }
 
     isVariableDeclaration(exp) {
-        return Array.isArray(exp) && exp[0] === "declare";
+        return Array.isArray(exp) && exp[0] === "define";
+    }
+
+    isVariableRedeclaration(exp) {
+        return Array.isArray(exp) && exp[0] === "assign";
     }
 
     isBlock(exp) {
@@ -83,6 +89,12 @@ class Eva {
         const [_, name, value] = exp;
         const evaluatedValue = this.eval(value, env);
         return env.define(name, evaluatedValue);
+    }
+
+    parseVariableRedeclaration(exp, env) {
+        const [_, name, value] = exp;
+        const evaluatedValue = this.eval(value, env);
+        return env.assign(name, evaluatedValue);
     }
 
     parseBlock(block, env) {
