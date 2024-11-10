@@ -19,5 +19,32 @@ assert.strictEqual(eva.eval(["declare", "x", -990]), -990);
 assert.strictEqual(eva.eval("x"), -990);
 assert.strictEqual(eva.eval(["declare", "z", "true"]), true);
 assert.strictEqual(eva.eval(["declare", "zero", "nil"]), null);
-
+assert.strictEqual(eva.eval(
+    ["begin", 
+        ["declare", "x", 2],
+        ["declare", "w", -2],
+        ["+", ["*", "x", "w"], -4],
+    ]), 
+    -8);
+assert.strictEqual(eva.eval(
+    ["begin", 
+        ["declare", "x", 2],
+        ["begin",
+            ["declare", "x", 5],
+            "x"
+        ],
+        "x"
+    ]), 
+    2);
+assert.strictEqual(eva.eval(
+    ["begin", 
+        ["declare", "z", 111],
+        ["declare", "x", 2],
+        ["begin",
+            ["declare", "x", ["+", "z", 10]],
+            "x"
+        ],
+        "x"
+    ]), 
+    2);
 console.log("ALL ASSERTIONS PASSED!");
