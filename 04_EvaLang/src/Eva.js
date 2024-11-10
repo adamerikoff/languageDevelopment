@@ -13,7 +13,9 @@ class Eva {
                 return this.parseString(exp);
             case this.isExpression(exp):
                 return this.parseExpression(exp, env);
-            case this.isVariable(exp):
+            case this.isVariableDeclaration(exp):
+                return this.parseVariableDeclaration(exp, env);
+            case this.isVariableName(exp):
                 return this.parseVariable(exp, env);
             default:
                 throw new Error(`Unsupported expression type: ${JSON.stringify(exp)}`);
@@ -31,8 +33,12 @@ class Eva {
     isExpression(exp) {
         return Array.isArray(exp) && ["+", "-", "*", "/"].includes(exp[0]);
     }
+    
+    isVariableName(exp) {
+        return typeof exp === "string" && /^[a-zA-Z][a-zA-Z0-9]*$/.test(exp);
+    }
 
-    isVariable(exp) {
+    isVariableDeclaration(exp) {
         return exp[0] === "declare";
     }
 
@@ -40,10 +46,14 @@ class Eva {
         return exp.slice(1, -1); // Remove surrounding quotes
     }
 
-    parseVariable(exp, env) {
+    parseVariableDeclaration(exp, env) {
         const [_, name, value] = exp;
         const evaluatedValue = this.eval(value, env);
         return env.define(name, evaluatedValue);
+    }
+    
+    parseVariable(exp, env) {
+        return env.lookup(exp);
     }
 
     parseExpression(exp, env) {
