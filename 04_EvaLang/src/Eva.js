@@ -21,6 +21,8 @@ class Eva {
                 return env.lookup(exp);
             case this.isIf(exp):
                 return this.parseIf(exp, env);
+            case this.isWhile(exp):
+                return this.parseWhile(exp, env);
             case this.isBlock(exp):
                 return this.parseBlock(exp, env);
             default:
@@ -29,6 +31,10 @@ class Eva {
     }
 
     // --- Type-checking Functions ---
+
+    isWhile(exp) {
+        return Array.isArray(exp) && exp[0] === "while";
+    }
 
     isLiteral(exp) {
         return this.isNumber(exp) || this.isString(exp);
@@ -142,6 +148,15 @@ class Eva {
             return this.eval(consequent, env);
         }
         return this.eval(alternate, env);
+    }
+
+    parseWhile(exp, env) {
+        const [_tag, condition, body] = exp;
+        let result;
+        while (this.eval(condition, env)) {
+            result = this.eval(body, env);
+        }
+        return result;
     }
 }
 

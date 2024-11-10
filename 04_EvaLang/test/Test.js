@@ -85,4 +85,19 @@ assert.strictEqual(
     30
 );
 
+assert.strictEqual(
+    eva.eval(["begin", 
+        ["define", "counter", 0],
+        ["define", "result", 0],
+        ["while", ["<", "counter", 10],
+            ["begin",
+                ["assign", "result", ["+", "result", 1]],
+                ["assign", "counter", ["+", "counter", 1]],
+            ],
+        ],
+        "result"
+    ]), 
+    10
+);
+
 console.log("ALL ASSERTIONS PASSED!");
