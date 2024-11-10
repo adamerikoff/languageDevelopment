@@ -11,12 +11,16 @@ class Eva {
                 return this.parseLiteral(exp);
             case this.isBinaryExpression(exp):
                 return this.parseBinaryExpression(exp, env);
+            case this.isComparisonOperator(exp):
+                return this.parseComparisonOperator(exp, env);
             case this.isVariableDeclaration(exp):
                 return this.parseVariableDeclaration(exp, env);
             case this.isVariableRedeclaration(exp):
                 return this.parseVariableRedeclaration(exp, env);
             case this.isVariable(exp):
                 return env.lookup(exp);
+            case this.isIf(exp):
+                return this.parseIf(exp, env);
             case this.isBlock(exp):
                 return this.parseBlock(exp, env);
             default:
@@ -42,6 +46,10 @@ class Eva {
         return Array.isArray(exp) && ["+", "-", "*", "/"].includes(exp[0]);
     }
 
+    isComparisonOperator(exp) {
+        return Array.isArray(exp) && [">", "<", ">=", "<=", "==", "!="].includes(exp[0]);
+    }
+
     isVariable(exp) {
         return typeof exp === "string" && /^[a-zA-Z][a-zA-Z0-9]*$/.test(exp);
     }
@@ -56,6 +64,10 @@ class Eva {
 
     isBlock(exp) {
         return Array.isArray(exp) && exp[0] === "begin";
+    }
+
+    isIf(exp) {
+        return Array.isArray(exp) && exp[0] === "if";
     }
 
     // --- Parsing and Evaluation Functions ---
@@ -85,6 +97,23 @@ class Eva {
         }
     }
 
+    parseComparisonOperator(exp, env) {
+        const [operator, left, right] = exp;
+        const leftValue = this.eval(left, env);
+        const rightValue = this.eval(right, env);
+
+        switch (operator) {
+            case ">": return leftValue > rightValue;
+            case "<": return leftValue < rightValue;
+            case ">=": return leftValue >= rightValue;
+            case "<=": return leftValue <= rightValue;
+            case "!=": return leftValue != rightValue;
+            case "==": return leftValue == rightValue;
+            default:
+                throw new Error(`Unsupported operator: ${operator}`);
+        }
+    }
+
     parseVariableDeclaration(exp, env) {
         const [_, name, value] = exp;
         const evaluatedValue = this.eval(value, env);
@@ -105,6 +134,14 @@ class Eva {
             result = this.eval(exp, blockEnv);
         });
         return result;
+    }
+
+    parseIf(exp, env) {
+        const [_tag, condition, consequent, alternate] = exp;
+        if (this.eval(condition)) {
+            return this.eval(consequent, env);
+        }
+        return this.eval(alternate, env);
     }
 }
 
