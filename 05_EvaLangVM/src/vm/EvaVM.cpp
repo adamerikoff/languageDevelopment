@@ -1,29 +1,40 @@
 #include "EvaVM.h"
 
-EvaVM::EvaVM(/* args */) {
+EvaVM::EvaVM() {
+    stack_pointer = stack.begin();
 }
 
 EvaVM::~EvaVM() {
 }
 
-void EvaVM::exec(const std::string &program) {
+EvaValue EvaVM::exec(const std::string &program) {
+    (void)program;
+
+    constants.push_back(EvaValue(42));
 
     code = {
-        OP_HALT
+        OP_CONST,
+        0,
+        OP_HALT,
     };
 
-    ip = &code[0];
+    instruction_pointer = &code[0];
 
     return eval();
 }
 
-void EvaVM::eval() {
+EvaValue EvaVM::eval() {
     for (;;) {
         uint8_t opcode = read_byte();
-        LOG(opcode);
+        LOG_OPCODE(opcode);
         switch (opcode) {
         case OP_HALT:
-            return ;
+            std::cout << "OP_HALT CODE" << std::endl;
+            return pop();
+            break;
+        case OP_CONST:
+            std::cout << "OP_CONST CODE" << std::endl;
+            push(get_const());
             break;
         default:
             DIE << "UNKNOWN OPCODE: " << std::hex << opcode << std::dec << std::endl;
@@ -33,5 +44,32 @@ void EvaVM::eval() {
 }
 
 uint8_t EvaVM::read_byte() {
-    return *ip++;
+    return *instruction_pointer++;
+}
+
+void EvaVM::push(const EvaValue& value) {
+    if ((size_t)(stack_pointer - stack.begin()) == STACK_LIMIT) {
+        DIE << "push(): Stack overflow!" << std::endl;
+    }
+    *stack_pointer = value;
+    stack_pointer++;
+}
+
+EvaValue EvaVM::pop() {
+    if (stack_pointer == stack.begin()) {
+        DIE << "pop(): Stack empty!" << std::endl;
+    }
+    --stack_pointer;
+    return *stack_pointer;
+}
+
+EvaValue EvaVM::get_const() {
+    uint8_t constIndex = read_byte();
+    
+    if (constIndex >= constants.size()) {
+        DIE << "get_const(): Invalid constant index!" << std::endl;
+    }
+
+    EvaValue constant = constants[constIndex];
+    return constant;
 }
