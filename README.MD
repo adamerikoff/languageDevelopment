@@ -9,7 +9,7 @@ This repository presents a collection of language development projects that expl
 | [RecursiveDescentParser](02_RecursiveDescentParser)     | A JavaScript parser that converts JavaScript code into an Abstract Syntax Tree (AST). |
 | [MonkeyLang](03_MonkeyLang)     |  |
 | [EvaLangInterpreter](04_EvaLangInterpreter)                        | A programming language interpreter written in JavaScript. |
-| [EvaLangCompiler](05_EvaLangCompiler)                        | A programming language interpreter written in JavaScript. |
+| [EvaLangVM](05_EvaLangVM)                        | A Eva programming language VM written in C++. |
 
 ## Resources
 
