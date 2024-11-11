@@ -5,17 +5,16 @@
 
 #include "OpCode.h"
 #include "Logger.h"
-#include "EvaValues.h"
+#include "EvaValue.h"
 
 #define STACK_LIMIT 512
 
 class EvaVM {
 private:
-    uint8_t* instruction_pointer;
-    EvaValue* stack_pointer;
+    uint8_t instruction_index;
     std::vector<uint8_t> code;
     std::vector<EvaValue> constants;
-    std::array<EvaValue, STACK_LIMIT> stack;
+    std::vector<EvaValue> stack;
 public:
     EvaVM();
     ~EvaVM();
@@ -28,6 +27,8 @@ public:
     EvaValue pop();
     
     EvaValue get_const();
+
+    void binaryOperation(const char* op);
 };
 
 #endif

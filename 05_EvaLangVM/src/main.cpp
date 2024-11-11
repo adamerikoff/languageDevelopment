@@ -10,7 +10,7 @@ int main(int argc, char const *argv[]) {
         42
     )");
 
-    LOG(AS_NUMBER(result));
+    LOG(result.asCPPString());
 
     std::cout << "ALL DONE!" << std::endl;
 

@@ -5,7 +5,11 @@
 #define OP_HALT 0x00
 // PUSHES A CONST ONTO THE STACK.
 #define OP_CONST 0x01
-// ADD INSTRUCTION.
+// MATH INSTRUCTION.
 #define OP_ADD 0x02
+#define OP_SUB 0x03
+#define OP_MUL 0x04
+#define OP_DIV 0x05
+#define OP_SQR 0x06
 
 #endif

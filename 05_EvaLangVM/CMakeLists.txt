@@ -18,6 +18,7 @@ add_executable(EvaLangVM
     ${SRC_DIR}/main.cpp
     ${VM_DIR}/EvaVM.cpp
     ${VM_DIR}/Logger.cpp
+    ${VM_DIR}/EvaValue.cpp
 )
 
 # Set up headers for IDEs and proper dependency tracking
@@ -29,6 +30,7 @@ target_sources(EvaLangVM PRIVATE
     ${VM_DIR}/Logger.h
     ${VM_DIR}/OpCode.h
     ${VM_DIR}/includes.h
+    ${VM_DIR}/EvaValue.h
 )
 
 target_compile_options(EvaLangVM PRIVATE -Wall -Wextra -pedantic)

@@ -14,8 +14,7 @@ public:
 #define DIE ErrorLogMessage()
 
 #define LOG_OPCODE(value) std::cout << #value << " = 0x" << std::setw(2) << std::setfill('0') << std::hex << (int)(value) << std::endl;
-#define LOG(value) std::cout << #value << " = " << value << std::endl;
 
-#define AS_NUMBER(evaValue) ((double) evaValue.number)
+#define LOG(value) std::cout << #value << " = " << value << std::endl;
 
 #endif
