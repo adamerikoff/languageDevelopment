@@ -18,18 +18,6 @@ The Eva interpreter is built in JavaScript and is fully extensible with user-def
 - **Arithmetic & Comparison Operations:** Built-in support for addition, subtraction, multiplication, division, and logical comparison operators.
 - **Customizable Environment:** Easily extendable environment to add custom behavior or override built-in functions.
 
-## Installation
-
-To install and run the Eva interpreter, follow these steps:
-
-1. Clone the repository to your local machine:
-
-   ```bash
-   git clone https://github.com/yourusername/eva-interpreter.git
-   cd eva-interpreter
-   ```
-## Usage
-
 ### Running the Interpreter
 
 To run the Eva interpreter interactively, use the following command in your terminal:
