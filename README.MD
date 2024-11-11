@@ -8,7 +8,8 @@ This repository presents a collection of language development projects that expl
 | [CustomLanguageTranspiler](01_CustomLanguageTranspiler) | A custom language transpiler to JS written in Ruby. |
 | [RecursiveDescentParser](02_RecursiveDescentParser)     | A JavaScript parser that converts JavaScript code into an Abstract Syntax Tree (AST). |
 | [MonkeyLang](03_MonkeyLang)     |  |
-| [EvaLangInterpreter](04_EvaLang)                        | A programming language interpreter written in JavaScript. |
+| [EvaLangInterpreter](04_EvaLangInterpreter)                        | A programming language interpreter written in JavaScript. |
+| [EvaLangCompiler](05_EvaLangCompiler)                        | A programming language interpreter written in JavaScript. |
 
 ## Resources
 
