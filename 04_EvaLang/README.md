@@ -2,17 +2,6 @@
 
 Eva is a simple programming language interpreter written in JavaScript, designed to showcase key features like variable declaration, loops, functions, and object-oriented programming. It aims to provide a learning tool for understanding interpreters and language design while allowing users to interact with a custom syntax.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [File Structure](#file-structure)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Overview
 
 Eva is a lightweight programming language built around expressions. It supports basic control flow structures (such as `if`, `for`, `while`), functions (both anonymous and named), and object-oriented features like classes and inheritance. This project is an interpreter, which means that it reads and executes code written in Eva directly from the command line or as part of another program.
