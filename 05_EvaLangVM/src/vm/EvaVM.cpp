@@ -10,15 +10,20 @@ EvaVM::~EvaVM() {
 EvaValue EvaVM::exec(const std::string &program) {
     (void)program;
 
-    constants.push_back(EvaValue(42));
+    constants.push_back(EvaValue(11));
+    constants.push_back(EvaValue(22));
 
     code = {
         OP_CONST,
         0,
+        OP_CONST,
+        1,
+        OP_ADD,
         OP_HALT,
     };
 
     instruction_pointer = &code[0];
+    stack_pointer = &stack[0];
 
     return eval();
 }
@@ -28,17 +33,28 @@ EvaValue EvaVM::eval() {
         uint8_t opcode = read_byte();
         LOG_OPCODE(opcode);
         switch (opcode) {
-        case OP_HALT:
-            std::cout << "OP_HALT CODE" << std::endl;
-            return pop();
-            break;
-        case OP_CONST:
-            std::cout << "OP_CONST CODE" << std::endl;
-            push(get_const());
-            break;
-        default:
-            DIE << "UNKNOWN OPCODE: " << std::hex << opcode << std::dec << std::endl;
-            break;
+            case OP_HALT: {
+                std::cout << "OP_HALT CODE" << std::endl;
+                return pop();
+                break;
+            }
+            case OP_CONST: {
+                std::cout << "OP_CONST CODE" << std::endl;
+                push(get_const());
+                break;
+            }
+            case OP_ADD: {
+                std::cout << "OP_ADD CODE" << std::endl;
+                double op1 = pop().asNumber();
+                double op2 = pop().asNumber();
+                double result = op1 + op2;
+                push(EvaValue(result));
+                break;
+            }
+            default: {
+                DIE << "UNKNOWN OPCODE: " << std::hex << opcode << std::dec << std::endl;
+                break;
+            }
         }
     }
 }

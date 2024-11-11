@@ -1,8 +1,11 @@
 #ifndef OPDCODE_H
 #define OPDCODE_H
 
+// STOPS THE PROGRAM.
 #define OP_HALT 0x00
-
+// PUSHES A CONST ONTO THE STACK.
 #define OP_CONST 0x01
+// ADD INSTRUCTION.
+#define OP_ADD 0x02
 
 #endif
