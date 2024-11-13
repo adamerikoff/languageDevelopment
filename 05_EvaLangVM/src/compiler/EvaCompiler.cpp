@@ -1,5 +1,19 @@
 #include "EvaCompiler.h"
 
+#define ALLOC_CONST(tester, converter, allocator, value)                 \
+    do {                                                                 \
+        for (auto i = 0; i < this->codeObject->constants.size(); i++) {  \
+            if (!tester(this->codeObject->constants[i])) {               \
+                continue;                                                \
+            }                                                            \
+            if (converter(this->codeObject->constants[i]) == value) {    \
+                return i;                                                \
+            }                                                            \
+        }                                                                \
+        this->codeObject->constants.push_back(allocator(value));         \
+        return this->codeObject->constants.size() - 1;                   \
+    } while (false)
+
 EvaCompiler::EvaCompiler() {
 }
 
@@ -36,27 +50,11 @@ void EvaCompiler::emit(uint8_t code) {
 }
 
 size_t EvaCompiler::numericConstID(double value) {
-    for (auto i = 0; i < this->codeObject->constants.size(); i++) {
-        if (!IS_NUMBER(this->codeObject->constants[i])) {
-            continue;
-        }
-        if (AS_NUMBER(this->codeObject->constants[i]) == value) {
-            return i;
-        }
-    }
-    this->codeObject->constants.push_back(NUMBER(value));
+    ALLOC_CONST(IS_NUMBER, AS_NUMBER, NUMBER, value);
     return this->codeObject->constants.size() - 1;
 }
 
 size_t EvaCompiler::stringConstID(const std::string value) {
-    for (auto i = 0; i < this->codeObject->constants.size(); i++) {
-        if (!IS_STRING(this->codeObject->constants[i])) {
-            continue;
-        }
-        if (AS_CPPSTRING(this->codeObject->constants[i]) == value) {
-            return i;
-        }
-    }
-    this->codeObject->constants.push_back(ALLOC_STRING(value));
+    ALLOC_CONST(IS_STRING, AS_CPPSTRING, ALLOC_STRING, value);
     return this->codeObject->constants.size() - 1;
 }
