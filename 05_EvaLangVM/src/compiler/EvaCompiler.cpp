@@ -14,6 +14,13 @@
         return this->codeObject->constants.size() - 1;                   \
     } while (false)
 
+#define GEN_BINARY_OP(op)      \
+    do {                       \
+        generate(exp.list[1]); \
+        generate(exp.list[2]); \
+        emit(op);              \
+    } while (false)
+
 EvaCompiler::EvaCompiler() {
 }
 
@@ -40,6 +47,23 @@ void EvaCompiler::generate(const Exp& exp) {
             break;
         }
         case ExpType::LIST: {
+            Value tag = exp.list[0];
+            if (tag.type == ExpType::SYMBOL) {
+                std::string op = tag.string;
+
+                if (op == "+") {
+                    GEN_BINARY_OP(OP_ADD);
+                }
+                if (op == "-") {
+                    GEN_BINARY_OP(OP_SUB);
+                }
+                if (op == "*") {
+                    GEN_BINARY_OP(OP_MUL);
+                }
+                if (op == "/") {
+                    GEN_BINARY_OP(OP_DIV);
+                }
+            }
             break;
         }
     }

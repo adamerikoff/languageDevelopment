@@ -2,6 +2,7 @@
 #define EVAVALUE_H
 
 #include "../includes.h"
+#include "../logger/Logger.h"
 
 enum class EvaValueType {
     NUMBER,
@@ -60,5 +61,41 @@ struct CodeObject : public Object {
 #define IS_OBJECT_TYPE(evaValue, objectType) (IS_OBJECT(evaValue) && AS_OBJECT(evaValue)->type == objectType)
 #define IS_STRING(evaValue) IS_OBJECT_TYPE(evaValue, ObjectType::STRING)
 #define IS_CODE(evaValue) IS_OBJECT_TYPE(evaValue, ObjectType::CODE)
+
+inline std::string evaValueToTypeString(const EvaValue& evaValue) {
+    if (IS_NUMBER(evaValue)) {
+        return "NUMBER";
+    } else if (IS_BOOLEAN(evaValue)) {
+        return "BOOLEAN";
+    } else if (IS_STRING(evaValue)) {
+        return "STRING";
+    } else if (IS_CODE(evaValue)) {
+        return "CODE";
+    } else {
+        DIE << "evaValueToTypeString: unknown type " << (int)evaValue.type;
+    }
+    return "";
+}
+
+inline std::string evaValueToConstantString(const EvaValue& evaValue) {
+    std::stringstream ss;
+    if (IS_NUMBER(evaValue)) {
+        ss << evaValue.number;
+    } else if (IS_BOOLEAN(evaValue)) {
+        ss << (evaValue.boolean ? "true" : "false");
+    } else if (IS_STRING(evaValue)) {
+        ss << '"' << AS_CPPSTRING(evaValue) << '"';
+    } else if (IS_CODE(evaValue)) {
+        auto code = AS_CODE(evaValue);
+        ss << "code " << code << ": " << code->name;
+    } else {
+        DIE << "evaValueToConstantString: unknown type " << (int)evaValue.type;
+    }
+    return ss.str();
+}
+
+inline std::ostream &operator<<(std::ostream &os, const EvaValue &evaValue) {
+    return os << "EvaValue (" << evaValueToTypeString(evaValue) << "): " << evaValueToConstantString(evaValue);
+}
 
 #endif // EVAVALUES_H

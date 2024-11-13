@@ -48,11 +48,6 @@ EvaValue EvaVM::eval() {
                 this->binaryOperation("/");
                 break;
             }
-            case OP_SQR: {
-                std::cout << "code: OP_SQR" << std::endl;
-                this->binaryOperation("**");
-                break;
-            }
             default: {
                 DIE << "UNKNOWN code: " << std::hex << opcode << std::dec << std::endl;
                 break;
@@ -114,9 +109,6 @@ void EvaVM::binaryOperation(const char* op) {
             return;
         }
         result = NUMBER(AS_NUMBER(op1) / AS_NUMBER(op2));
-    }
-    else if (strcmp(op, "**") == 0 && IS_NUMBER(op1) && IS_NUMBER(op2)) {
-        result = NUMBER(pow(AS_NUMBER(op1), AS_NUMBER(op2)));
     }
     else {
         DIE << "Error: Unsupported operator " << op << std::endl;
