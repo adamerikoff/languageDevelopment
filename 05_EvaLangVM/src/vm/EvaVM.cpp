@@ -1,5 +1,31 @@
 #include "EvaVM.h"
 
+#define COMPARE_VALUES(op, v1, v2)  \
+do {                                \
+    bool res;                       \
+    switch (op) {                   \
+    case 0:                         \
+        res = v1 < v2;              \
+        break;                      \
+    case 1:                         \
+        res = v1 > v2;              \
+        break;                      \
+    case 2:                         \
+        res = v1 == v2;             \
+        break;                      \
+    case 3:                         \
+        res = v1 >= v2;             \
+        break;                      \
+    case 4:                         \
+        res = v1 <= v2;             \
+        break;                      \
+    case 5:                         \
+        res = v1 != v2;             \
+        break;                      \
+    }                               \
+    push(BOOLEAN(res));             \
+} while (false)
+
 EvaVM::EvaVM() {
     this->parser = std::make_unique<EvaParser>();
     this->compiler = std::make_unique<EvaCompiler>();
@@ -46,6 +72,22 @@ EvaValue EvaVM::eval() {
             case OP_DIV: {
                 std::cout << "code: OP_DIV" << std::endl;
                 this->binaryOperation("/");
+                break;
+            }
+            case OP_COMPARE: {
+                std::cout << "code: OP_COMPARE" << std::endl;
+                uint8_t op = this->read_byte();
+                EvaValue op2 = this->pop();
+                EvaValue op1 = this->pop();
+                if (IS_NUMBER(op1) && IS_NUMBER(op2)) {
+                    double v1 = AS_NUMBER(op1);
+                    double v2 = AS_NUMBER(op2);
+                    COMPARE_VALUES(op, v1, v2);
+                } else if (IS_STRING(op1) && IS_STRING(op2)) {
+                    std::string s1 = AS_CPPSTRING(op1);
+                    std::string s2 = AS_CPPSTRING(op2);
+                    COMPARE_VALUES(op, s1, s2);
+                }
                 break;
             }
             default: {
@@ -117,5 +159,4 @@ void EvaVM::binaryOperation(const char* op) {
 
     this->push(result);
 }
-
 

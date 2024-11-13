@@ -7,7 +7,7 @@ int main(int argc, char const *argv[]) {
     EvaVM vm;
 
     auto result = vm.exec(R"(
-        (+ "hi" "world")
+        (< 2 3)
     )");
 
     LOG(result);

@@ -21,6 +21,15 @@
         emit(op);              \
     } while (false)
 
+std::map<std::string, uint8_t> EvaCompiler::compareOps = {
+    {"<", 0},
+    {">", 1},
+    {"==", 2},
+    {">=", 3},
+    {"<=", 4},
+    {"!=", 5},
+};
+
 EvaCompiler::EvaCompiler() {
 }
 
@@ -44,6 +53,11 @@ void EvaCompiler::generate(const Exp& exp) {
             break;
         }
         case ExpType::SYMBOL: {
+            if (exp.string == "true" || exp.string == "false") {
+                this->emit(OP_CONST);
+                this->emit(booleanConstID(exp.string == "true" ? true : false));
+            }
+            
             break;
         }
         case ExpType::LIST: {
@@ -63,6 +77,12 @@ void EvaCompiler::generate(const Exp& exp) {
                 if (op == "/") {
                     GEN_BINARY_OP(OP_DIV);
                 }
+                if (compareOps.count(op) != 0) {
+                    generate(exp.list[1]);
+                    generate(exp.list[2]);
+                    emit(OP_COMPARE);
+                    emit(compareOps[op]);
+                }
             }
             break;
         }
@@ -80,5 +100,10 @@ size_t EvaCompiler::numericConstID(double value) {
 
 size_t EvaCompiler::stringConstID(const std::string value) {
     ALLOC_CONST(IS_STRING, AS_CPPSTRING, ALLOC_STRING, value);
+    return this->codeObject->constants.size() - 1;
+}
+
+size_t EvaCompiler::booleanConstID(const bool value) {
+    ALLOC_CONST(IS_BOOLEAN, AS_BOOLEAN, BOOLEAN, value);
     return this->codeObject->constants.size() - 1;
 }
