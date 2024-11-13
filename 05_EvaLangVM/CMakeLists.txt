@@ -6,31 +6,30 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Ensure the correct macOS SDK is used
+set(CMAKE_OSX_SYSROOT /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)
+
 # Define source directories
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(VM_DIR ${SRC_DIR}/vm)
+set(BC_DIR ${SRC_DIR}/bytecode)
+set(PR_DIR ${SRC_DIR}/parser)
+set(CM_DIR ${SRC_DIR}/compiler)
 
 # Include directories
 include_directories(${VM_DIR})
+include_directories(${BC_DIR})
+include_directories(${PR_DIR})
 
 # Add executable target
 add_executable(EvaLangVM
     ${SRC_DIR}/main.cpp
     ${VM_DIR}/EvaVM.cpp
-    ${VM_DIR}/Logger.cpp
-    ${VM_DIR}/EvaValue.cpp
+    ${CM_DIR}/EvaCompiler.cpp
 )
 
 # Set up headers for IDEs and proper dependency tracking
-target_include_directories(EvaLangVM PRIVATE ${VM_DIR})
+target_include_directories(EvaLangVM PRIVATE ${VM_DIR} ${BC_DIR} ${PR_DIR})
 
-# Specify additional files to be used as header dependencies
-target_sources(EvaLangVM PRIVATE
-    ${VM_DIR}/EvaVM.h
-    ${VM_DIR}/Logger.h
-    ${VM_DIR}/OpCode.h
-    ${VM_DIR}/includes.h
-    ${VM_DIR}/EvaValue.h
-)
-
-target_compile_options(EvaLangVM PRIVATE -Wall -Wextra -pedantic)
+# Set compiler options
+target_compile_options(EvaLangVM PRIVATE -Wall)

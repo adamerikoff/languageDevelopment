@@ -1,20 +1,23 @@
 #ifndef EVAVM_H
 #define EVAVM_H
 
-#include "includes.h"
+#include "../includes.h"
 
-#include "OpCode.h"
-#include "Logger.h"
-#include "EvaValue.h"
+#include "../bytecode/OpCode.h"
+#include "../parser/EvaParser.h"
+#include "../logger/Logger.h"
+#include "../compiler/EvaCompiler.h"
+#include "./EvaValue.h"
 
-#define STACK_LIMIT 512
+using syntax::EvaParser;
 
-class EvaVM {
+class EvaVM {    
 private:
+    std::unique_ptr<EvaParser> parser;
+    std::unique_ptr<EvaCompiler> compiler;
     uint8_t instruction_index;
-    std::vector<uint8_t> code;
-    std::vector<EvaValue> constants;
     std::vector<EvaValue> stack;
+    CodeObject* codeObject;
 public:
     EvaVM();
     ~EvaVM();
