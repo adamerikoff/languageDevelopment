@@ -12,5 +12,10 @@
 #include <iomanip>
 #include <type_traits>
 #include <map>
+#include <memory>
+#include <set>
+#include <list>
+#include <functional>
+#include <fstream>
 
 #endif
