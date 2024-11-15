@@ -10,6 +10,7 @@ This repository presents a collection of language development projects that expl
 | [MonkeyLang](03_MonkeyLang)     |  |
 | [EvaLangInterpreter](04_EvaLangInterpreter)             | A programming language interpreter written in JavaScript. |
 | [EvaLangVitualMachine](05_EvaLangVM)                    | A Eva programming language VM written in C++. |
+| [EvaLangTypeChecker](06_EvaLangTypeChecker)             | A Eva programming language TypeChecker. |
 
 ## Resources
 
