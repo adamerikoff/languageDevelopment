@@ -11,6 +11,7 @@ This repository presents a collection of language development projects that expl
 | [EvaLangInterpreter](04_EvaLangInterpreter)             | A programming language interpreter written in JavaScript. |
 | [EvaLangVitualMachine](05_EvaLangVM)                    | A Eva programming language VM written in C++. |
 | [EvaLangTypeChecker](06_EvaLangTypeChecker)             | A Eva programming language TypeChecker written in Ruby. |
+| [EvaLangLLVM](06_EvaLangLLVM)             | A Eva programming language implementation using LLVM Framework. |
 
 ## Resources
 
