@@ -1,7 +1,7 @@
-# main_test.rb
 require_relative '../src/EvaTC'
 require_relative 'numbers_test'
 require_relative 'strings_test'
+require_relative 'math_test'
 
 def run_all_tests
   evaluator = EvaTC.new
@@ -12,6 +12,9 @@ def run_all_tests
 
   puts "\nRunning String Tests..."
   run_tests(evaluator, string_tests)
+
+  puts "\nRunning Math Tests..."
+  run_tests(evaluator, math_test)
 
   puts "\nAll tests complete."
 end
