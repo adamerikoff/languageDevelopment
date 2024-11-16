@@ -9,9 +9,10 @@ This repository presents a collection of language development projects that expl
 | [RecursiveDescentParser](02_RecursiveDescentParser)     | A JavaScript parser that converts JavaScript code into an Abstract Syntax Tree (AST). |
 | [MonkeyLang](03_MonkeyLang)     |  |
 | [EvaLangInterpreter](04_EvaLangInterpreter)             | A programming language interpreter written in JavaScript. |
-| [EvaLangVitualMachine](05_EvaLangVM)                    | A Eva programming language VM written in C++. |
+| [EvaLangVirtualMachine](05_EvaLangVM)                    | A Eva programming language VM written in C++. |
 | [EvaLangTypeChecker](06_EvaLangTypeChecker)             | A Eva programming language TypeChecker written in Ruby. |
-| [EvaLangLLVM](06_EvaLangLLVM)             | A Eva programming language implementation using LLVM Framework. |
+| [EvaLangLLVM](07_EvaLangLLVM)             | A Eva programming language implementation using LLVM Framework. |
+| [LoxLanguage](08_LoxLanguage)             | An interpreter for the Lox programming language, featuring dynamic typing and automatic memory management, implemented in Java. |
 
 ## Resources
 
