@@ -6,6 +6,8 @@
 #include <regex>
 #include <memory>
 #include <string>
+#include <vector>
+#include <regex>
 
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/LLVMContext.h"
