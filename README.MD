@@ -18,4 +18,4 @@ This repository presents a collection of language development projects that expl
 
 - [Destroy All Software](https://www.destroyallsoftware.com).
 - [Dmitry Soshnikov](http://dmitrysoshnikov.com/).
-
+- [Crafting Interpreters](https://craftinginterpreters.com/).
