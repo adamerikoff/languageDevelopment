@@ -66,7 +66,7 @@ public class Scanner {
 			addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
 			break;
 		case '=':
-			addToken(match('=') ? TokenType.EQUALEQUAL : TokenType.EQUAL);
+			addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
 			break;
 		case '<':
 			addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
