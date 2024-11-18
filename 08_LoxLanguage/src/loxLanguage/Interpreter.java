@@ -49,6 +49,19 @@ public class Interpreter implements Expr.Visitor<Object>,
 		return null;
 	}
 	
+	@Override
+	public Void visitClassStmt(Stmt.Class stmt) {
+		environment.define(stmt.name.lexeme, null);
+		Map<String, LoxFunction> methods = new HashMap<>();
+		for (Stmt.Function method : stmt.methods) {
+			LoxFunction function = new LoxFunction(method, environment);
+			methods.put(method.name.lexeme, function);
+		}
+		LoxClass klass = new LoxClass(stmt.name.lexeme, methods);
+		environment.assign(stmt.name, klass);
+		return null;
+	}
+	
 	void executeBlock(List<Stmt> statements, Environment environment) {
 		Environment previous = this.environment;
 		try {
@@ -105,6 +118,17 @@ public class Interpreter implements Expr.Visitor<Object>,
 			if (!isTruthy(left)) return left;
 		}
 		return evaluate(expr.right);
+	}
+	
+	@Override
+	public Object visitSetExpr(Expr.Set expr) {
+		Object object = evaluate(expr.object);
+		if (!(object instanceof LoxInstance)) {
+			throw new RunTimeError(expr.name, "Only instances have fields.");
+		}
+		Object value = evaluate(expr.value);
+		((LoxInstance)object).set(expr.name, value);
+		return value;
 	}
 	
 	@Override
@@ -203,6 +227,16 @@ public class Interpreter implements Expr.Visitor<Object>,
 			throw new RunTimeError(expr.paren, "Expected " + function.arity() + " arguments but got " + arguments.size() + ".");
 			}
 		return function.call(this, arguments);
+	}
+	
+	
+	@Override
+	public Object visitGetExpr(Expr.Get expr) {
+		Object object = evaluate(expr.object);
+		if (object instanceof LoxInstance) {
+			return ((LoxInstance) object).get(expr.name);
+		}
+		throw new RunTimeError(expr.name, "Only instances have properties.");
 	}
 	
 	@Override
