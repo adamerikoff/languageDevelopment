@@ -13,6 +13,7 @@ This repository presents a collection of language development projects that expl
 | [EvaLangTypeChecker](06_EvaLangTypeChecker)             | A Eva programming language TypeChecker written in Ruby. |
 | [EvaLangLLVM](07_EvaLangLLVM)             | A Eva programming language implementation using LLVM Framework. |
 | [LoxLanguage](08_LoxLanguage)             | An interpreter for the Lox programming language, featuring dynamic typing and automatic memory management, implemented in Java. |
+| [LoxLanguageCompiler](09_LoxLanguageCompiler)             | A compiler for the Lox programming language implemented in C. |
 
 ## Resources
 
