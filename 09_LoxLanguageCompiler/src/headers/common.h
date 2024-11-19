@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdarg.h>
 
 #define DEBUG_TRACE_EXECUTION
 #define DEBUG_PRINT_CODE
