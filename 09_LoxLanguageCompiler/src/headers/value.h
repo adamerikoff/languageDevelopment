@@ -2,45 +2,85 @@
 #define CLOX_VALUE_H
 
 #include "common.h"
-#include "memory.h"
 #include "value.h"
+#include "settings.h"
+
+typedef struct sObj Obj;
+typedef struct sObjString ObjString;
+
+typedef int64_t vint_t;
+#define VINT_SIZE 4
 
 typedef enum {
-    VAL_BOOL,
     VAL_NIL,
-    VAL_NUMBER, 
+    VAL_BOOL,
+    VAL_FLOAT,
+    VAL_OBJ,
+#ifdef CLOX_INTEGER_TYPE
+    VAL_INT,
+#endif
 } ValueType;
 
 typedef struct {
     ValueType type;
     union {
-        bool boolean;
-        double number;
+        bool vbool;
+        double vfloat;
+        Obj* vobj;
+#ifdef CLOX_INTEGER_TYPE
+        vint_t vint;
+#endif
     } as;
 } Value;
 
-#define IS_BOOL(value)   ((value).type == VAL_BOOL)
-#define IS_NIL(value)    ((value).type == VAL_NIL)
-#define IS_NUMBER(value) ((value).type == VAL_NUMBER)
+#define BOOL_VAL(value)    ((Value){ VAL_BOOL, { .vbool = value } })
+#define NIL_VAL            ((Value){ VAL_NIL, { .vfloat = 0 } })
+#define FLOAT_VAL(value)   ((Value){ VAL_FLOAT, { .vfloat = value } })
+#ifdef CLOX_INTEGER_TYPE
+    #define INT_VAL(value) ((Value){ VAL_INT, { .vint = value } })
+#endif
+#define OBJ_VAL(object)    ((Value){ VAL_OBJ, { .vobj = (Obj*)object } })
 
+#define AS_BOOL(value)     ((value).as.vbool)
+#define AS_FLOAT(value)    ((value).as.vfloat)
+#ifdef CLOX_INTEGER_TYPE
+    #define AS_INT(value)  ((value).as.vint)
+#endif
+#define AS_OBJ(value)      ((value).as.vobj)
 
-#define AS_BOOL(value) ((value).as.boolean)
-#define AS_NUMBER(value) ((value).as.number)
-
-#define BOOL_VAL(value)   ((Value){VAL_BOOL, {.boolean = value}})
-#define NIL_VAL            ((Value){VAL_NIL, {.number = 0}})
-#define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
-
+#define IS_BOOL(value)     ((value).type == VAL_BOOL)
+#define IS_NIL(value)      ((value).type == VAL_NIL)
+#define IS_FLOAT(value)    ((value).type == VAL_FLOAT)
+#ifdef CLOX_INTEGER_TYPE
+    #define IS_INT(value)  ((value).type == VAL_INT)
+#else
+    #define IS_INT(value)  (false)
+#endif
+#define IS_NUMBER(value)   (IS_FLOAT(value) || IS_INT(value))
+#define IS_OBJ(value)      ((value).type == VAL_OBJ)
 
 typedef struct {
-    int capacity;
-    int count;
+    size_t capacity;
+    size_t count;
     Value* values;
 } ValueArray;
 
+bool valuesEqual(Value a, Value b);
 void initValueArray(ValueArray* array);
-void writeValueArray(ValueArray* array, Value value);
 void freeValueArray(ValueArray* array);
+int writeValueArray(ValueArray* array, Value value);
 void printValue(Value value);
+void printValueType(Value value);
+
+uint32_t hashInt(vint_t number);
+uint32_t hashString(const char* key, int length);
+uint32_t hashValue(Value value);
+
+#ifdef CLOX_INTEGER_TYPE
+    double numberToFloat(Value in);
+    #define NUMBER_TO_FLOAT(value) (numberToFloat(value))
+#else
+    #define NUMBER_TO_FLOAT(value) (value)
+#endif
 
 #endif
