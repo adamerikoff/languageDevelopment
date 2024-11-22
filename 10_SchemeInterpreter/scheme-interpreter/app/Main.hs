@@ -6,13 +6,16 @@ import Control.Monad
 import Control.Monad.Except
 import System.Environment
 import Text.ParserCombinators.Parsec hiding (spaces)
+import System.IO hiding (try)
 
 -- Entry point of the program
 main :: IO ()
 main = do
     args <- getArgs
-    evaled <- return $ liftM show $ readExpr (args !! 0) >>= eval
-    putStrLn $ extractValue $ trapError evaled
+    case length args of
+        0 -> runRepl
+        1 -> evalAndPrint $ args !! 0
+        otherwise -> putStrLn "Program takes only 0 or 1 arguments"
 
 -- Parser for symbols
 symbol :: Parser Char
@@ -284,5 +287,35 @@ type ThrowsError = Either LispError
 
 trapError action = catchError action (return . show)
 
+-- Extract the value from a Right constructor in a ThrowsError monad
 extractValue :: ThrowsError a -> a
 extractValue (Right val) = val
+
+-- Flush a string to the standard output
+flushStr :: String -> IO ()
+flushStr str = putStr str >> hFlush stdout
+
+-- Read a line of input after displaying a prompt
+readPrompt :: String -> IO String
+readPrompt prompt = flushStr prompt >> getLine
+
+-- Evaluate a string expression and return its result as a string
+evalString :: String -> IO String
+evalString expr = return $ extractValue $ trapError (liftM show $ readExpr expr >>= eval)
+
+-- Evaluate an expression and print the result
+evalAndPrint :: String -> IO ()
+evalAndPrint expr = evalString expr >>= putStrLn
+
+-- Repeat an action until a condition is met
+untilM :: Monad m => (a -> Bool) -> m a -> (a -> m ()) -> m ()
+untilM pred prompt action = do
+    result <- prompt
+    if pred result
+        then return ()
+        else action result >> untilM pred prompt action
+
+-- Run the REPL
+runRepl :: IO ()
+runRepl = untilM (== "quit") (readPrompt "Lisp>>> ") evalAndPrint
+
