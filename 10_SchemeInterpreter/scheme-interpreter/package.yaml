@@ -37,6 +37,7 @@ library:
   source-dirs: src
   dependencies:
     - parsec
+    - mtl
 
 executables:
   scheme-interpreter-exe:
@@ -49,6 +50,7 @@ executables:
     dependencies:
     - scheme-interpreter
     - parsec
+    - mtl
 
 tests:
   scheme-interpreter-test:
